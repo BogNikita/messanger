@@ -1,0 +1,29 @@
+.primary-input {
+  background: #f3f3f3;
+  border-radius: 5px;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-wrapper {
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.input-wrapper div {
+  width: 280px;
+}
+
+.input-wrapper label {
+    padding-top: 6px;
+    margin-right: 10px;
+}
+
+.input-error {
+    display: block;
+    color: rgb(190, 91, 91);
+    margin: 5px 0;
+}

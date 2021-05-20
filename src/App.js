@@ -1,10 +1,13 @@
-import './App.css';
+import React from 'react';
+import { Provider } from 'react-redux';
+import SignupPage from './pages/SignupPage';
+import store from './store';
 
 function App() {
   return (
-    <div className="App">
-      
-    </div>
+    <Provider store={store}>
+      <SignupPage />
+    </Provider>
   );
 }
 
