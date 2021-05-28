@@ -1,0 +1,36 @@
+.ChatList {
+  grid-area: ChatList;
+  background-color: #416ccc;
+  padding: 10px;
+  position: relative;
+}
+
+.TopWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.TopWrapper div {
+  margin: 0;
+}
+
+.TopWrapper input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.select {
+  padding: 11px;
+  background: #f3f3f3;
+  border-radius: 5px;
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.select option {
+  font-weight: normal;
+}
+
+
+

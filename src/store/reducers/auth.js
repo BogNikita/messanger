@@ -1,40 +1,50 @@
 import {
-  FETCH_MESSAGES_REQUEST,
-  FETCH_MESSAGES_SUCCESS,
-  FETCH_MESSAGES_FAILURE,
+  FETCH_AUTH_REQUEST,
+  FETCH_AUTH_SUCCESS,
+  FETCH_AUTH_FAILURE,
+  AUTH_LOGOUT,
 } from '../action/action.type';
 
 const initialState = {
-  authorization: false,
+  token: null,
   isPending: null,
   isSuccess: null,
   isError: null,
-  errorMessage: ''
+  errorMessage: '',
+  email: null
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
-    case FETCH_MESSAGES_REQUEST:
+    case FETCH_AUTH_REQUEST:
       return {
         ...state,
-        authorization: true,
         isPending: true,
         isError: null
       };
-    case FETCH_MESSAGES_SUCCESS:
+    case FETCH_AUTH_SUCCESS:
       return {
         ...state,
-        authorization: true,
+        token: action.token,
         isPending: false,
         isSuccess: true,
+        errorMessage: '',
+        email: action.email
       };
-    case FETCH_MESSAGES_FAILURE:
+    case FETCH_AUTH_FAILURE:
       return {
         ...state,
         isPending: false,
         isError: true,
         errorMessage: action.error
       };
+    case AUTH_LOGOUT: {
+      return {
+        ...state,
+        token: null,
+        email: null
+      }
+    }
     default:
       return state;
   }

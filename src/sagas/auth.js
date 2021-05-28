@@ -1,26 +1,21 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { FETCH_MESSAGES_REQUEST } from '../store/action/action.type';
+import { FETCH_AUTH_REQUEST } from '../store/action/action.type';
 import { fetchError, fetchSuccess } from '../store/action/auth';
 import firebase from 'firebase/app';
 
-const fetchAuth = (...arg) =>
-  new Promise((res) => res(firebase.auth().signInWithEmailAndPassword(...arg)));
-
 function* fetchAuthWorker({ email, password }) {
   try {
-    const user = yield call(fetchAuth, email, password);
-    if (user.message) {
-      yield put(fetchError(user.message));
-    } else {
-      yield put(fetchSuccess());
-    }
+    const auth = firebase.auth();
+    const data = yield call([auth, auth.signInWithEmailAndPassword], email, password);
+    const token = data.user.uid;
+    yield put(fetchSuccess(token, email));
   } catch (e) {
     yield put(fetchError(e.message));
   }
 }
 
 function* fetchAuthWotcher() {
-  yield takeLatest(FETCH_MESSAGES_REQUEST, fetchAuthWorker);
+  yield takeLatest(FETCH_AUTH_REQUEST, fetchAuthWorker);
 }
 
 export default fetchAuthWotcher;
