@@ -1,9 +1,23 @@
 .signup-layuout {
-    margin: 0 auto;
-    width: 360px;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  margin: 0 auto;
+  width: 360px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.MainLayout {
+  display: grid;
+  grid-template-columns: 0.8fr 1.4fr 0.8fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-template-areas: 'ChatList MessageField Profile';
+  height: 100vh;
+}
+
+
+.Profile {
+  grid-area: Profile;
 }

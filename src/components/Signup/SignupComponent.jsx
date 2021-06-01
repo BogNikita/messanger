@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Field, Form } from 'redux-form';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import classes from './Signup.module.css'
@@ -16,7 +15,6 @@ export default function SignupComponent(props) {
     handleSubmit,
     isPending,
     isError,
-    isSuccess,
     errorMessage,
   } = props;
 
@@ -30,7 +28,7 @@ export default function SignupComponent(props) {
   }, [errorMessage])
 
   return (
-    <Form className={classes['form-signup']} onSubmit={handleSubmit}>
+    <form className={classes['form-signup']} onSubmit={handleSubmit}>
       <Input
         type="email"
         name={fieldLogin}
@@ -55,8 +53,7 @@ export default function SignupComponent(props) {
       
       <Button type="submit">Войти</Button>
       {isPending && 'Loading...'}
-      {isSuccess && 'Авторизация прошла успешно'}
-      {isError && <Field name='error' component={Error}/>}
-    </Form>
+      {isError && <Error/>}
+    </form>
   );
 }

@@ -1,26 +1,35 @@
 import {
-  FETCH_MESSAGES_REQUEST,
-  FETCH_MESSAGES_SUCCESS,
-  FETCH_MESSAGES_FAILURE,
+  FETCH_AUTH_REQUEST,
+  FETCH_AUTH_SUCCESS,
+  FETCH_AUTH_FAILURE,
+  AUTH_LOGOUT,
 } from './action.type';
 
 export function fetchRequest(email, password) {
   return {
-    type: FETCH_MESSAGES_REQUEST,
+    type: FETCH_AUTH_REQUEST,
     email,
-    password
+    password,
   };
 }
 
-export function fetchSuccess() {
+export function fetchSuccess(token, email) {
   return {
-    type: FETCH_MESSAGES_SUCCESS,
+    type: FETCH_AUTH_SUCCESS,
+    token,
+    email
   };
 }
 
 export function fetchError(error) {
   return {
-    type: FETCH_MESSAGES_FAILURE,
+    type: FETCH_AUTH_FAILURE,
     error,
+  };
+}
+
+export function logout() {
+  return {
+    type: AUTH_LOGOUT,
   };
 }

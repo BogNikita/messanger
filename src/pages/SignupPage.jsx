@@ -4,9 +4,8 @@ import { useFormik } from 'formik';
 import SignupComponent from '../components/Signup/SignupComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRequest } from '../store/action/auth';
-import { reduxForm } from 'redux-form';
 
-let SignupPage = () => {
+export default function SignupPage() {
   const dispatch = useDispatch();
 
   const state = useSelector((state) => state.auth);
@@ -16,7 +15,7 @@ let SignupPage = () => {
       email: '',
       password: '',
     },
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       const { email, password } = values;
       dispatch(fetchRequest(email, password));
     },
@@ -37,15 +36,8 @@ let SignupPage = () => {
 
   return (
     <SignupLayout>
-      
       <h1>Авторизация <i className="fab fa-accessible-icon"></i></h1>
       <SignupComponent {...formik} {...state} fieldLogin="email" fieldPassword="password" />
     </SignupLayout>
   );
 };
-
-SignupPage = reduxForm({
-  form: 'error',
-})(SignupPage);
-
-export default SignupPage;

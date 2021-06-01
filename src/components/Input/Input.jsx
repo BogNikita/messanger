@@ -24,6 +24,7 @@ export default React.memo(function Input({
             onChange={onChange}
             onBlur={onBlur}
             value={value}
+            autoComplete="off"
           />
           {errors && <span className={classes['input-error']}>{errors}</span>}
         </div>
