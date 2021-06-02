@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChangeChatStatus } from '../../store/action/activeChat';
-import moment from 'moment';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
+import MessageItem from '../MessageItem/MessageItem';
 import classes from './MessageField.module.css';
 
 export default React.memo(function MessageField() {
@@ -55,30 +55,32 @@ export default React.memo(function MessageField() {
     }
   }, [chat?.status, clickHandler, email, isContinue]);
 
-  const rate = () => Array(5).fill('').map((_, i) => {
-    if (i < chat.rate) {
-      return <i key={`star_${i}`} className="fas fa-star"></i>
-    } else return <i key={`star_${i}`} className="far fa-star"></i>
-  })
+  const rate = () =>
+    Array(5)
+      .fill('')
+      .map((_, i) => {
+        if (i < chat.rate) {
+          return <i key={`star_${i}`} className="fas fa-star"></i>;
+        } else return <i key={`star_${i}`} className="far fa-star"></i>;
+      });
 
   return (
     <div className={classes.MessageField}>
-      <div className={classes.wrapper}>
         <h2>{chat?.messages[0]?.writtenBy}</h2>
-        <div>
+        <div className={classes.Wrapper}>
           {chat?.messages?.map((item, i, arr) => (
-            <div
+            <MessageItem
               key={`${item.timestamp}_${i}`}
-              className={classes.Message}
-              style={{ textAlign: `${item.writtenBy !== arr[0].writtenBy ? 'right' : 'left'}` }}>
-              <span>{item.content}</span>
-              <time>{moment(item.timestamp).format('LT')}</time>
-            </div>
+              timestamp={item.timestamp}
+              content={item.content}
+              author={arr[0].writtenBy}
+              user={item.writtenBy}
+              imgSrc={item.imgSrc}
+            />
           ))}
-        </div>
         {chat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
-        <form onSubmit={(e) => e.preventDefault()}>{chat?.status && ActionButton()}</form>
       </div>
+      <form className={classes.MessageForm} onSubmit={(e) => e.preventDefault()}>{chat?.status && ActionButton()}</form>
     </div>
   );
 });
