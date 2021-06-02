@@ -1,4 +1,4 @@
-.signup-layuout {
+.SignupLayuout {
   margin: 0 auto;
   width: 360px;
   height: 100vh;
@@ -16,7 +16,6 @@
   grid-template-areas: 'ChatList MessageField Profile';
   height: 100vh;
 }
-
 
 .Profile {
   grid-area: Profile;

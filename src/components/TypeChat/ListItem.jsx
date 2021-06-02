@@ -1,52 +1,29 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchChatRequest } from '../../store/action/chat';
 import { getChat } from '../../store/action/activeChat';
 import InfiniteScroll from 'react-infinite-scroller';
-import firebase from 'firebase/app';
-import ChatListItem from './ChatListItem';
+import ChatList from './ChatList';
 import classes from './TypeChat.module.css';
 
-
 export default React.memo(function ListItem({ title, type }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [chats, setChats] = useState([]);
-  const [hasMore, sethasMore] = useState(true);
+  const { hasMore, chats } = useSelector((state) => state.chat.chatList[type]);
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.activeChat);
+  const [isOpen, setIsOpen] = useState(false);
 
   const fetchChats = useCallback(
     (count) => {
-      firebase
-        .database()
-        .ref('chatList')
-        .orderByChild('status')
-        .limitToFirst(count)
-        .equalTo(type)
-        .once('value')
-        .then((snapshot) => {
-          const data = snapshot.val();
-          if (data === null) {
-            setChats([]);
-            return;
-          }
-          const result = Object.values(data);
-          sethasMore(result.length >= count);
-          setChats(result);
-        });
+      dispatch(fetchChatRequest(count, type));
     },
-    [type],
+    [dispatch, type],
   );
 
   useEffect(() => {
     if (type === 'waiting') {
       setIsOpen(true);
     }
-    fetchChats(1);
-  }, [fetchChats, type]);
-
-  useEffect(() => {
-    fetchChats(1);
-  }, [fetchChats, status]);
+    fetchChats(2);
+  }, [type, fetchChats]);
 
   const clickHandler = useCallback(
     (chat) => {
@@ -56,7 +33,7 @@ export default React.memo(function ListItem({ title, type }) {
   );
 
   return (
-    <li type={type}>
+    <li>
       <h3 onClick={() => setIsOpen(!isOpen)}>
         <i className={`fas fa-angle-${isOpen ? 'down' : 'right'}`}></i>
         &nbsp;{title}
@@ -66,20 +43,14 @@ export default React.memo(function ListItem({ title, type }) {
           <InfiniteScroll
             pageStart={0}
             loadMore={() => fetchChats(chats.length + 1)}
-            hasMore={hasMore && !!chats.length}
+            hasMore={hasMore && !!chats?.length}
             useWindow={false}
             loader={
               <div className="loader" key={0}>
                 Loading ...
               </div>
             }>
-            {chats.length ? (
-              chats.map((chat, i) => (
-                <ChatListItem key={`${chat.id}_${i}`} chat={chat} clickHandler={clickHandler}/>
-              ))
-            ) : (
-              <span>{title} чаты не добавлены</span>
-            )}
+            <ChatList chats={chats} title={title} clickHandler={clickHandler} />
           </InfiniteScroll>
         )}
       </ul>

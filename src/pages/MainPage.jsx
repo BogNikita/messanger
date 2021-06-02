@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import ChatList from '../components/ChatList/ChatList';
-import MainLayout from '../components/layout/MainLayout';
+import ChatField from '../components/ChatField/ChatField';
 import MessageField from '../components/MessageField/MessageField';
+import classes from './Page.module.css';
+
 
 export default function MainPage() {
   const { token } = useSelector((state) => ({
@@ -19,10 +20,9 @@ export default function MainPage() {
   }, [history, token]);
 
   return (
-    <MainLayout>
-      <ChatList />
+    <div className={classes.MainLayout}>
+      <ChatField />
       <MessageField />
-      <div></div>
-    </MainLayout>
+    </div>
   );
 }

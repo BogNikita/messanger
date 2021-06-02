@@ -16,7 +16,7 @@ export default function chatList(state = initialState, action) {
     case CHANGE_CHAT_STATUS:
       return {
         ...state,
-        status: action.status,
+        status: action.newStatus,
       };
     default:
       return state;

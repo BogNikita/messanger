@@ -4,18 +4,25 @@ import { fetchChatError, fetchChatSuccess } from '../store/action/chat';
 import { changeChatStatus } from '../store/action/activeChat';
 import firebase from 'firebase/app';
 
-function* fetchChatWorker() {
+function* fetchChatWorker({ count, status }) {
   try {
     const database = firebase.database();
-    const result = yield call([database, database.ref], 'chatList');
-    const data = yield call([result, result.once], 'value');
-    yield put(fetchChatSuccess(data.val()));
+    const data = yield call([database, database.ref], 'chatList');
+    const order = yield call([data, data.orderByChild], 'status');
+    const limit = yield call([order, order.limitToFirst], count);
+    const equal = yield call([limit, limit.equalTo], status);
+    const result = yield call([equal, equal.once], 'value');
+    const req = result.val();
+    if (!!req) {
+      const filter = Object.values(req).filter((item) => item);
+      yield put(fetchChatSuccess(filter, status, (filter.length >= count)));
+    }
   } catch (e) {
     yield put(fetchChatError(e.message));
   }
 }
 
-function* fetchChangeChatStatusWorker({ id, status, email }) {
+function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus }) {
   try {
     yield firebase
       .database()
@@ -24,13 +31,13 @@ function* fetchChangeChatStatusWorker({ id, status, email }) {
       .equalTo(id)
       .once('value', (snapshot) => {
         snapshot.forEach((key) => {
-          key.ref.child('status').set(status);
+          key.ref.child('status').set(newStatus);
           if (email) {
             key.ref.child('operatorId').set(email);
           }
         });
       });
-    yield put(changeChatStatus(id, status));
+    yield put(changeChatStatus(id, newStatus, email, oldStatus));
   } catch (e) {
     yield put(fetchChatError(e.message));
   }

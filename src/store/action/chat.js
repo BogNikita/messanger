@@ -4,16 +4,20 @@ import {
   FETCH_CHAT_FAILURE,
 } from './action.type';
 
-export function fetchChatRequest() {
+export function fetchChatRequest(count, status) {
   return {
     type: FETCH_CHAT_REQUEST,
+    count,
+    status
   };
 }
 
-export function fetchChatSuccess(data) {
+export function fetchChatSuccess(data, status, hasMore) {
   return {
     type: FETCH_CHAT_SUCCESS,
     data,
+    status,
+    hasMore
   };
 }
 
