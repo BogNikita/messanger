@@ -1,28 +1,21 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChatRequest } from '../../store/action/chat';
+import throttle from 'lodash.throttle';
 import { getChat } from '../../store/action/activeChat';
 import { logout } from '../../store/action/auth';
-import classes from './ChatList.module.css';
 import Input from '../Input/Input';
-import throttle from 'lodash.throttle';
 import Dropdown from '../Dropdown/Dropdown';
 import Button from '../Button/Button';
 import TypeChatList from '../TypeChat/TypeChatList';
+import classes from './ChatField.module.css';
 
+export default function ChatField() {
+  const { chatList } = useSelector((state) => state.chat);
+  const dispatch = useDispatch();
 
-
-export default function ChatList() {
   const [searchElements, setSearch] = useState([]);
   const [searchId, setSearchId] = useState([]);
   const [valueSearch, setValueSearch] = useState('content');
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchChatRequest());
-  }, [dispatch]);
-
-  const { chatList } = useSelector((state) => state.chat);
 
   const typeChats = useRef([
     { type: 'waiting', title: 'В ожидании' },
@@ -38,17 +31,19 @@ export default function ChatList() {
         const result = [];
         const id = [];
         if (!!value) {
-          chatList.forEach((chat) => {
-            const find = chat.messages.filter((item) =>
-              item[valueSearch].toLowerCase().includes(value.toLowerCase()),
-            );
-            if (find.length) {
-              find.forEach(() => {
-                id.push(chat.id);
-              });
-            }
-            result.push(...find);
-          });
+          for (const key in chatList) {
+            chatList[key].chats.forEach((chat) => {
+              const find = chat.messages.filter((item) =>
+                item[valueSearch].toLowerCase().includes(value.toLowerCase()),
+              );
+              if (find.length) {
+                find.forEach(() => {
+                  id.push(chat.id);
+                });
+              }
+              result.push(...find);
+            });
+          }
         }
         setSearchId([...id]);
         setSearch([...result]);
@@ -57,13 +52,17 @@ export default function ChatList() {
   );
 
   const clickHandler = (id) => {
-    const chat = chatList.find((chat) => chat.id === id);
-    dispatch(getChat(chat));
+    for (const key in chatList) {
+      const chat = chatList[key].chats.find((chat) => chat.id === id);
+      if (chat) {
+        dispatch(getChat(chat));
+      }
+    }
   };
 
   const clickHandlerLogout = () => {
-    dispatch(logout())
-  }
+    dispatch(logout());
+  };
 
   return (
     <div className={classes.ChatList}>

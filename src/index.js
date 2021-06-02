@@ -6,12 +6,11 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import { firebaseConfig } from './config/firebase.config';
-import './index.css';
 import moment from 'moment';
-import 'moment/locale/ru'
+import 'moment/locale/ru';
+import './index.css';
 
-moment.locale('ru')
-
+moment.locale('ru');
 
 firebase.initializeApp(firebaseConfig);
 

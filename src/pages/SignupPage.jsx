@@ -1,9 +1,9 @@
 import React from 'react';
-import SignupLayout from '../components/layout/SignupLayout';
-import { useFormik } from 'formik';
-import SignupComponent from '../components/Signup/SignupComponent';
 import { useDispatch, useSelector } from 'react-redux';
+import { useFormik } from 'formik';
 import { fetchRequest } from '../store/action/auth';
+import SignupComponent from '../components/Signup/SignupComponent';
+import classes from './Page.module.css';
 
 export default function SignupPage() {
   const dispatch = useDispatch();
@@ -35,9 +35,11 @@ export default function SignupPage() {
   });
 
   return (
-    <SignupLayout>
-      <h1>Авторизация <i className="fab fa-accessible-icon"></i></h1>
+    <div className={classes.SignupLayuout}>
+      <h1>
+        Авторизация <i className="fab fa-accessible-icon"></i>
+      </h1>
       <SignupComponent {...formik} {...state} fieldLogin="email" fieldPassword="password" />
-    </SignupLayout>
+    </div>
   );
-};
+}

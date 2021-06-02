@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChangeChatStatus } from '../../store/action/activeChat';
 import moment from 'moment';
@@ -6,49 +6,60 @@ import Input from '../Input/Input';
 import Button from '../Button/Button';
 import classes from './MessageField.module.css';
 
-
-export default function MessageField() {
-  const [chat, setChat] = useState();
-  const [isContinue, setIsContinue] = useState(false);
+export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
   const { email } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const [chat, setChat] = useState();
+  const [isContinue, setIsContinue] = useState(false);
 
   useEffect(() => {
     setChat(activeChat);
   }, [activeChat]);
-  const dispatch = useDispatch();
 
-  const clickHandler = (status, email) => {
-    if (status === 'active' || status === 'waiting') {
-      setIsContinue(true);
-    }
-    const { id } = chat;
-    if (status !== 'active') {
-      dispatch(fetchChangeChatStatus(id, status, email));
-    }
-  };
+  const textButton = useRef({
+    active: 'Продолжить чат',
+    waiting: 'Войти в чат',
+    save: 'Удалить чат',
+    offline: 'Сохранить чат',
+  });
 
-  const ActionButton = () => {
-    switch (chat.status) {
-      case 'waiting':
-        return <Button onClick={() => clickHandler('active', email)}>Войти в чат</Button>;
-      case 'active':
-        return isContinue ? (
-          <>
-            <Input />
-            <Button>Отправить сообщение</Button>
-          </>
-        ) : (
-          <Button onClick={() => clickHandler('active')}>Продолжить чат</Button>
-        );
-      case 'offline':
-        return <Button onClick={() => clickHandler('save')}>Сохранить чат</Button>;
-      case 'save':
-        return <Button onClick={() => clickHandler('offline')}>Удалить чат</Button>;
-      default:
-        break;
+  const clickHandler = useCallback(
+    (status, email) => {
+      if (status === 'active' || status === 'waiting') {
+        setIsContinue(true);
+      }
+      const { id } = chat;
+      if (status !== 'active') {
+        dispatch(fetchChangeChatStatus(id, status, email));
+      }
+    },
+    [chat, dispatch],
+  );
+
+  const ActionButton = useCallback(() => {
+    if (chat.status === 'active' && isContinue) {
+      return (
+        <>
+          <Input />
+          <Button>Отправить сообщение</Button>
+        </>
+      );
+    } else {
+      return (
+        <Button onClick={() => clickHandler(chat.status, email)}>
+          {textButton.current[chat.status]}
+        </Button>
+      );
     }
-  };
+  }, [chat?.status, clickHandler, email, isContinue]);
+
+  const rate = () => Array(5).fill('').map((_, i) => {
+    if (i < chat.rate) {
+      return <i key={`star_${i}`} className="fas fa-star"></i>
+    } else return <i key={`star_${i}`} className="far fa-star"></i>
+  })
 
   return (
     <div className={classes.MessageField}>
@@ -65,9 +76,9 @@ export default function MessageField() {
             </div>
           ))}
         </div>
-        {chat?.rate && <span>Оценка чата {chat.rate} из 5</span>}
+        {chat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
         <form onSubmit={(e) => e.preventDefault()}>{chat?.status && ActionButton()}</form>
       </div>
     </div>
   );
-}
+});

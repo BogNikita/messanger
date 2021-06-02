@@ -2,14 +2,20 @@ import {
   FETCH_CHAT_REQUEST,
   FETCH_CHAT_SUCCESS,
   FETCH_CHAT_FAILURE,
+  CHANGE_CHAT_STATUS,
 } from '../action/action.type';
 
 const initialState = {
-    isPending: null,
-    isError: null,
-    isSuccess: null,
-    errorMessage: null,
-    chatList: []
+  isPending: null,
+  isError: null,
+  isSuccess: null,
+  errorMessage: null,
+  chatList: {
+    active: { hasMore: false, chats: [] },
+    offline: { hasMore: false, chats: [] },
+    save: { hasMore: false, chats: [] },
+    waiting: { hasMore: false, chats: [] },
+  },
 };
 
 export default function chatList(state = initialState, action) {
@@ -23,7 +29,13 @@ export default function chatList(state = initialState, action) {
     case FETCH_CHAT_SUCCESS:
       return {
         ...state,
-        chatList: [...action.data],
+        chatList: {
+          ...state.chatList,
+          [action.status]: {
+            hasMore: action.hasMore,
+            chats: [...action.data],
+          },
+        },
         isPending: false,
         isSuccess: true,
       };
@@ -34,6 +46,18 @@ export default function chatList(state = initialState, action) {
         isError: true,
         errorMessage: action.error,
       };
+    case CHANGE_CHAT_STATUS:
+      const newState = JSON.parse(JSON.stringify(state.chatList));
+      const find = newState[action.oldStatus].chats.find((chat) => chat.id === action.id);
+      newState[action.oldStatus].chats = newState[action.oldStatus].chats.filter(
+        (chat) => chat.id !== find.id,
+      );
+      newState[action.newStatus].chats.push(find);
+      return {
+        ...state,
+        chatList: { ...newState },
+      };
+
     default:
       return state;
   }

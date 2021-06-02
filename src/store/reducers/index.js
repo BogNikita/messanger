@@ -1,12 +1,10 @@
 import auth from './auth';
 import chat from './chat';
-import activeChat from './activeChat'
-import { reducer as formReducer } from 'redux-form';
+import activeChat from './activeChat';
+import { combineReducers } from 'redux';
 
-const { combineReducers } = require('redux');
 const rootReducer = combineReducers({
   auth,
-  form: formReducer,
   chat,
   activeChat,
 });
