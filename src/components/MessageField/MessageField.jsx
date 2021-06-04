@@ -4,8 +4,8 @@ import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/ac
 import { fetchAutoCompleteRequest } from '../../store/action/autoComplete';
 import Active from './Active';
 import MessageList from './MessageList';
-import classes from './MessageField.module.css';
 import DialogIsOver from '../DialogIsOver/DialogIsOver';
+import classes from './MessageField.module.css';
 
 export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
@@ -57,7 +57,7 @@ export default React.memo(function MessageField() {
   );
 
   return (
-    <div className={classes.MessageField}>
+    <div className={classes.MessageField} >
       <h2>{activeChat?.messages[0]?.writtenBy}</h2>
       <div className={classes.Wrapper}>
         <div className={classes.WrapperMessageList}>

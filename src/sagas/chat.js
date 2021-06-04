@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 import {
   FETCH_ADD_NEW_MESSAGE,
   FETCH_CHANGE_CHAT_STATUS,
