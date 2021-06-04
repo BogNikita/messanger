@@ -19,7 +19,7 @@ export default React.memo(function MessageField() {
   useEffect(() => {
     setIsContinue(false);
     dispatch(fetchAutoCompleteRequest());
-  }, [activeChat, dispatch]);
+  }, [activeChat.id, dispatch]);
 
   const clickHandler = useCallback(
     (status, email) => {
@@ -68,8 +68,10 @@ export default React.memo(function MessageField() {
     <div className={classes.MessageField}>
       <h2>{activeChat?.messages[0]?.writtenBy}</h2>
       <div className={classes.Wrapper}>
+        <div className={classes.WrapperMessageList}>
         <MessageList messages={activeChat.messages} />
         {activeChat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
+        </div>
       </div>
       <form className={classes.MessageForm} onSubmit={onSubmitHandler}>
         {activeChat?.status && (

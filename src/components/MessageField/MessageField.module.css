@@ -8,8 +8,19 @@
 
 .Wrapper {
   display: flex;
-  flex-direction: column;
   flex: 1 0 auto;
+  position: relative;
+}
+
+.WrapperMessageList {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .Rate i {
