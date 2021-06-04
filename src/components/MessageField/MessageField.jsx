@@ -1,86 +1,93 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChangeChatStatus } from '../../store/action/activeChat';
-import Input from '../Input/Input';
-import Button from '../Button/Button';
-import MessageItem from '../MessageItem/MessageItem';
+import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/activeChat';
+import { fetchAutoCompleteRequest } from '../../store/action/autoComplete';
+import Active from './Active';
+import MessageList from './MessageList';
 import classes from './MessageField.module.css';
 
 export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
+  const autoComplete = useSelector((state) => state.autoComplete.messages);
   const { email } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const [chat, setChat] = useState();
+  const [selectMessage, setSelectMessage] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
   const [isContinue, setIsContinue] = useState(false);
 
   useEffect(() => {
-    setChat(activeChat);
-  }, [activeChat]);
-
-  const textButton = useRef({
-    active: 'Продолжить чат',
-    waiting: 'Войти в чат',
-    save: 'Удалить чат',
-    offline: 'Сохранить чат',
-  });
+    setIsContinue(false);
+    dispatch(fetchAutoCompleteRequest());
+  }, [activeChat.id, dispatch]);
 
   const clickHandler = useCallback(
     (status, email) => {
       if (status === 'active' || status === 'waiting') {
         setIsContinue(true);
       }
-      const { id } = chat;
+      const { id } = activeChat;
       if (status !== 'active') {
         dispatch(fetchChangeChatStatus(id, status, email));
       }
     },
-    [chat, dispatch],
+    [activeChat, dispatch],
   );
 
-  const ActionButton = useCallback(() => {
-    if (chat.status === 'active' && isContinue) {
-      return (
-        <>
-          <Input />
-          <Button>Отправить сообщение</Button>
-        </>
-      );
-    } else {
-      return (
-        <Button onClick={() => clickHandler(chat.status, email)}>
-          {textButton.current[chat.status]}
-        </Button>
-      );
-    }
-  }, [chat?.status, clickHandler, email, isContinue]);
+  const onSubmitHandler = useCallback(
+    (e) => {
+      e.preventDefault();
+      let content = '';
+      if (selectMessage && selectMessage.length) {
+        content = selectMessage?.reduce((acc, item) => acc + ' ' + item.label, '');
+      }
+      content += ' ' + inputMessage;
+      const newMessage = {
+        content,
+        imgSrc: '',
+        timestamp: Date.now(),
+        writtenBy: email,
+      };
+      dispatch(fetchAddNewMessage(activeChat.id, newMessage, activeChat.messages.length));
+      setInputMessage('');
+      setSelectMessage(null);
+    },
+    [selectMessage, inputMessage, email, dispatch, activeChat],
+  );
 
   const rate = () =>
     Array(5)
       .fill('')
       .map((_, i) => {
-        if (i < chat.rate) {
+        if (i < activeChat.rate) {
           return <i key={`star_${i}`} className="fas fa-star"></i>;
         } else return <i key={`star_${i}`} className="far fa-star"></i>;
       });
 
   return (
     <div className={classes.MessageField}>
-        <h2>{chat?.messages[0]?.writtenBy}</h2>
-        <div className={classes.Wrapper}>
-          {chat?.messages?.map((item, i, arr) => (
-            <MessageItem
-              key={`${item.timestamp}_${i}`}
-              timestamp={item.timestamp}
-              content={item.content}
-              author={arr[0].writtenBy}
-              user={item.writtenBy}
-              imgSrc={item.imgSrc}
-            />
-          ))}
-        {chat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
+      <h2>{activeChat?.messages[0]?.writtenBy}</h2>
+      <div className={classes.Wrapper}>
+        <div className={classes.WrapperMessageList}>
+        <MessageList messages={activeChat.messages} />
+        {activeChat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
+        </div>
       </div>
-      <form className={classes.MessageForm} onSubmit={(e) => e.preventDefault()}>{chat?.status && ActionButton()}</form>
+      <form className={classes.MessageForm} onSubmit={onSubmitHandler}>
+        {activeChat?.status && (
+          <Active
+            status={activeChat.status}
+            email={email}
+            clickHandler={clickHandler}
+            isContinue={isContinue}
+            setSelectMessage={setSelectMessage}
+            inputMessage={inputMessage}
+            selectMessage={selectMessage}
+            setInputMessage={setInputMessage}
+            autoComplete={autoComplete}
+          />
+        )}
+      </form>
     </div>
   );
 });

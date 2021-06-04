@@ -3,7 +3,7 @@ import moment from 'moment';
 import classes from './TypeChat.module.css';
 
 export default function ChatListItem({ chat, clickHandler }) {
-  const lastMessage = chat?.messages[chat.messages.length - 1]?.content;
+  const {content, timestamp} = chat?.messages[chat?.messages?.length - 1];
   return (
     <li className={classes.gridContainer} onClick={() => clickHandler(chat)}>
       <div className={classes.Client}>
@@ -11,10 +11,10 @@ export default function ChatListItem({ chat, clickHandler }) {
         {chat.messages[0].writtenBy}
       </div>
       <div className={classes.LastMessage}>
-        {lastMessage}
+        {content}
       </div>
       <div className={classes.Time}>
-        <time>{moment(chat.messages[chat.messages.length - 1].timestamp).fromNow()}</time>
+        <time>{moment(timestamp).fromNow()}</time>
       </div>
     </li>
   );

@@ -3,6 +3,7 @@ import {
   FETCH_CHAT_SUCCESS,
   FETCH_CHAT_FAILURE,
   CHANGE_CHAT_STATUS,
+  ADD_NEW_MESSAGE,
 } from '../action/action.type';
 
 const initialState = {
@@ -57,7 +58,20 @@ export default function chatList(state = initialState, action) {
         ...state,
         chatList: { ...newState },
       };
-
+    case ADD_NEW_MESSAGE:
+      const newStateActive = JSON.parse(JSON.stringify(state.chatList.active.chats));
+      const findChat = newStateActive.find((chat) => chat.id === action.id);
+      findChat.messages = [...findChat.messages, action.newMessage];
+      newStateActive[action.id] = findChat;
+      return {
+        ...state,
+        chatList: {
+          ...state.chatList,
+          active: {
+            chats: [...newStateActive],
+          },
+        },
+      };
     default:
       return state;
   }

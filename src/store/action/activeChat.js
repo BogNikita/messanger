@@ -1,4 +1,10 @@
-import { GET_CHAT, FETCH_CHANGE_CHAT_STATUS, CHANGE_CHAT_STATUS } from './action.type';
+import {
+  GET_CHAT,
+  FETCH_CHANGE_CHAT_STATUS,
+  CHANGE_CHAT_STATUS,
+  FETCH_ADD_NEW_MESSAGE,
+  ADD_NEW_MESSAGE
+} from './action.type';
 
 export function getChat(chat) {
   return {
@@ -31,6 +37,23 @@ export function changeChatStatus(id, newStatus, email, oldStatus) {
     newStatus,
     id,
     email,
-    oldStatus
+    oldStatus,
   };
+}
+
+export function fetchAddNewMessage(id, newMessage, index) {
+  return {
+    type: FETCH_ADD_NEW_MESSAGE,
+    id,
+    newMessage,
+    index
+  };
+}
+
+export function addNewMessage(id, newMessage) {
+  return {
+    type: ADD_NEW_MESSAGE,
+    id,
+    newMessage
+  }
 }

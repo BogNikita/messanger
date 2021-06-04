@@ -8,8 +8,19 @@
 
 .Wrapper {
   display: flex;
-  flex-direction: column;
   flex: 1 0 auto;
+  position: relative;
+}
+
+.WrapperMessageList {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .Rate i {
@@ -26,13 +37,3 @@ h2 {
   width: 100%;
 }
 
-.MessageForm div {
-  width: 100%;
-  margin: 0;
-  margin-right: 5px;
-}
-
-.MessageForm input {
-  background-color: #cecece;
-  margin: 0;
-}
