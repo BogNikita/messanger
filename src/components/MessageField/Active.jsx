@@ -40,13 +40,11 @@ export default function Active(props) {
   const usl = status === 'active' && isContinue;
 
   const onInputChange = (inputValue, { action }) => {
-    switch (action) {
-      case 'input-change':
-        setInputMessage(inputValue);
-        return;
-      default:
-        return;
+    if (action === 'input-change') {
+      setInputMessage(inputValue);
+      return;
     }
+    return
   };
 
   if (usl) {

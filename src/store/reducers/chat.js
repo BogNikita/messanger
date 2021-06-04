@@ -61,7 +61,8 @@ export default function chatList(state = initialState, action) {
     case ADD_NEW_MESSAGE:
       const newStateActive = JSON.parse(JSON.stringify(state.chatList.active.chats));
       const findChat = newStateActive.find((chat) => chat.id === action.id);
-      findChat.messages.push(action.newMessage);
+      findChat.messages = [...findChat.messages, action.newMessage];
+      newStateActive[action.id] = findChat;
       return {
         ...state,
         chatList: {

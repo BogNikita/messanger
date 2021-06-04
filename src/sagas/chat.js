@@ -10,15 +10,16 @@ import firebase from 'firebase/app';
 
 function* fetchChatWorker({ count, status }) {
   try {
-    const database = firebase.database();
-    const data = yield call([database, database.ref], 'chatList');
-    const order = yield call([data, data.orderByChild], 'status');
-    const limit = yield call([order, order.limitToFirst], count);
-    const equal = yield call([limit, limit.equalTo], status);
-    const result = yield call([equal, equal.once], 'value');
-    const req = result.val();
-    if (!!req) {
-      const filter = Object.values(req).filter((item) => item);
+    const res = yield firebase
+      .database()
+      .ref('chatList')
+      .orderByChild('status')
+      .limitToFirst(count)
+      .equalTo(status)
+      .once('value');
+    const data = res.val();
+    if (!!data) {
+      const filter = Object.values(data).filter((item) => item);
       yield put(fetchChatSuccess(filter, status, filter.length >= count));
     }
   } catch (e) {
@@ -47,12 +48,12 @@ function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus }) {
   }
 }
 
-function* fetchAddNewMessageWorker({ id, newMessage, index}) {
+function* fetchAddNewMessageWorker({ id, newMessage, index }) {
   try {
     yield firebase
       .database()
-      .ref(`chatList/${id-1}/messages/${index}`)
-      .set({...newMessage})
+      .ref(`chatList/${id - 1}/messages/${index}`)
+      .set({ ...newMessage });
     yield put(addNewMessage(id, newMessage));
   } catch (e) {
     yield put(fetchChatError(e.message));

@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/activeChat';
-import Active from './Active';
-import MessageItem from '../MessageItem/MessageItem';
-import classes from './MessageField.module.css';
 import { fetchAutoCompleteRequest } from '../../store/action/autoComplete';
+import Active from './Active';
+import MessageList from './MessageList';
+import classes from './MessageField.module.css';
 
 export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
-  const autoComplete = useSelector((state) => state.autoComplete.messages)
+  const autoComplete = useSelector((state) => state.autoComplete.messages);
   const { email } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -18,7 +18,7 @@ export default React.memo(function MessageField() {
 
   useEffect(() => {
     setIsContinue(false);
-    dispatch(fetchAutoCompleteRequest())
+    dispatch(fetchAutoCompleteRequest());
   }, [activeChat, dispatch]);
 
   const clickHandler = useCallback(
@@ -39,19 +39,16 @@ export default React.memo(function MessageField() {
       e.preventDefault();
       let content = '';
       if (selectMessage && selectMessage.length) {
-        content = selectMessage?.reduce(
-          (acc, item) => acc + ' ' + item.label,
-          '',
-        )
+        content = selectMessage?.reduce((acc, item) => acc + ' ' + item.label, '');
       }
-      content += ' '+inputMessage; 
+      content += ' ' + inputMessage;
       const newMessage = {
         content,
         imgSrc: '',
         timestamp: Date.now(),
         writtenBy: email,
       };
-      dispatch(fetchAddNewMessage(activeChat.id, newMessage, activeChat.messages.length))
+      dispatch(fetchAddNewMessage(activeChat.id, newMessage, activeChat.messages.length));
       setInputMessage('');
       setSelectMessage(null);
     },
@@ -71,16 +68,7 @@ export default React.memo(function MessageField() {
     <div className={classes.MessageField}>
       <h2>{activeChat?.messages[0]?.writtenBy}</h2>
       <div className={classes.Wrapper}>
-        {activeChat?.messages?.map((item, i, arr) => (
-          <MessageItem
-            key={`${item.timestamp}_${i}`}
-            timestamp={item.timestamp}
-            content={item.content}
-            author={arr[0].writtenBy}
-            user={item.writtenBy}
-            imgSrc={item.imgSrc}
-          />
-        ))}
+        <MessageList messages={activeChat.messages} />
         {activeChat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
       </div>
       <form className={classes.MessageForm} onSubmit={onSubmitHandler}>

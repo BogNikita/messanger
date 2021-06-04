@@ -10,15 +10,11 @@
   flex-direction: column;
 }
 
-.Message span {
-  display: block;
-}
-
-.Message time {
+.MessageTime {
   font-style: italic;
   font-size: 12px;
 }
 
-.Message img {
-    width: 100%;
+.MessageImg {
+  width: 100%;
 }
