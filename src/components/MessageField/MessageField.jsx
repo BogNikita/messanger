@@ -5,6 +5,7 @@ import { fetchAutoCompleteRequest } from '../../store/action/autoComplete';
 import Active from './Active';
 import MessageList from './MessageList';
 import classes from './MessageField.module.css';
+import DialogIsOver from '../DialogIsOver/DialogIsOver';
 
 export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
@@ -55,22 +56,18 @@ export default React.memo(function MessageField() {
     [selectMessage, inputMessage, email, dispatch, activeChat],
   );
 
-  const rate = () =>
-    Array(5)
-      .fill('')
-      .map((_, i) => {
-        if (i < activeChat.rate) {
-          return <i key={`star_${i}`} className="fas fa-star"></i>;
-        } else return <i key={`star_${i}`} className="far fa-star"></i>;
-      });
-
   return (
     <div className={classes.MessageField}>
       <h2>{activeChat?.messages[0]?.writtenBy}</h2>
       <div className={classes.Wrapper}>
         <div className={classes.WrapperMessageList}>
-        <MessageList messages={activeChat.messages} />
-        {activeChat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
+          <MessageList messages={activeChat.messages} />
+          {activeChat?.rate && (
+            <DialogIsOver
+              chatRate={activeChat.rate}
+              timestamp={activeChat.messages[activeChat.messages.length - 1].timestamp}
+            />
+          )}
         </div>
       </div>
       <form className={classes.MessageForm} onSubmit={onSubmitHandler}>
