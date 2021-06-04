@@ -1,7 +1,11 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
-import { FETCH_CHANGE_CHAT_STATUS, FETCH_CHAT_REQUEST } from '../store/action/action.type';
+import {
+  FETCH_ADD_NEW_MESSAGE,
+  FETCH_CHANGE_CHAT_STATUS,
+  FETCH_CHAT_REQUEST,
+} from '../store/action/action.type';
 import { fetchChatError, fetchChatSuccess } from '../store/action/chat';
-import { changeChatStatus } from '../store/action/activeChat';
+import { addNewMessage, changeChatStatus } from '../store/action/activeChat';
 import firebase from 'firebase/app';
 
 function* fetchChatWorker({ count, status }) {
@@ -15,7 +19,7 @@ function* fetchChatWorker({ count, status }) {
     const req = result.val();
     if (!!req) {
       const filter = Object.values(req).filter((item) => item);
-      yield put(fetchChatSuccess(filter, status, (filter.length >= count)));
+      yield put(fetchChatSuccess(filter, status, filter.length >= count));
     }
   } catch (e) {
     yield put(fetchChatError(e.message));
@@ -43,9 +47,22 @@ function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus }) {
   }
 }
 
+function* fetchAddNewMessageWorker({ id, newMessage, index}) {
+  try {
+    yield firebase
+      .database()
+      .ref(`chatList/${id-1}/messages/${index}`)
+      .set({...newMessage})
+    yield put(addNewMessage(id, newMessage));
+  } catch (e) {
+    yield put(fetchChatError(e.message));
+  }
+}
+
 function* fetchChatWotcher() {
   yield takeEvery(FETCH_CHAT_REQUEST, fetchChatWorker);
   yield takeEvery(FETCH_CHANGE_CHAT_STATUS, fetchChangeChatStatusWorker);
+  yield takeEvery(FETCH_ADD_NEW_MESSAGE, fetchAddNewMessageWorker);
 }
 
 export default fetchChatWotcher;

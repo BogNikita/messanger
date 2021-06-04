@@ -1,54 +1,77 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChangeChatStatus } from '../../store/action/activeChat';
+import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/activeChat';
 import Active from './Active';
 import MessageItem from '../MessageItem/MessageItem';
 import classes from './MessageField.module.css';
-
-
+import { fetchAutoCompleteRequest } from '../../store/action/autoComplete';
 
 export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
+  const autoComplete = useSelector((state) => state.autoComplete.messages)
   const { email } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const [chat, setChat] = useState();
+  const [selectMessage, setSelectMessage] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
   const [isContinue, setIsContinue] = useState(false);
 
   useEffect(() => {
-    setChat(activeChat);
     setIsContinue(false);
-  }, [activeChat]);
+    dispatch(fetchAutoCompleteRequest())
+  }, [activeChat, dispatch]);
 
   const clickHandler = useCallback(
     (status, email) => {
       if (status === 'active' || status === 'waiting') {
         setIsContinue(true);
       }
-      const { id } = chat;
+      const { id } = activeChat;
       if (status !== 'active') {
         dispatch(fetchChangeChatStatus(id, status, email));
       }
     },
-    [chat, dispatch],
+    [activeChat, dispatch],
+  );
+
+  const onSubmitHandler = useCallback(
+    (e) => {
+      e.preventDefault();
+      let content = '';
+      if (selectMessage && selectMessage.length) {
+        content = selectMessage?.reduce(
+          (acc, item) => acc + ' ' + item.label,
+          '',
+        )
+      }
+      content += ' '+inputMessage; 
+      const newMessage = {
+        content,
+        imgSrc: '',
+        timestamp: Date.now(),
+        writtenBy: email,
+      };
+      dispatch(fetchAddNewMessage(activeChat.id, newMessage, activeChat.messages.length))
+      setInputMessage('');
+      setSelectMessage(null);
+    },
+    [selectMessage, inputMessage, email, dispatch, activeChat],
   );
 
   const rate = () =>
     Array(5)
       .fill('')
       .map((_, i) => {
-        if (i < chat.rate) {
+        if (i < activeChat.rate) {
           return <i key={`star_${i}`} className="fas fa-star"></i>;
         } else return <i key={`star_${i}`} className="far fa-star"></i>;
       });
 
-      const test = chat?.status === 'active' && isContinue
-
   return (
     <div className={classes.MessageField}>
-      <h2>{chat?.messages[0]?.writtenBy}</h2>
+      <h2>{activeChat?.messages[0]?.writtenBy}</h2>
       <div className={classes.Wrapper}>
-        {chat?.messages?.map((item, i, arr) => (
+        {activeChat?.messages?.map((item, i, arr) => (
           <MessageItem
             key={`${item.timestamp}_${i}`}
             timestamp={item.timestamp}
@@ -58,21 +81,23 @@ export default React.memo(function MessageField() {
             imgSrc={item.imgSrc}
           />
         ))}
-        {chat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
+        {activeChat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
       </div>
-      <form className={classes.MessageForm} onSubmit={(e) => e.preventDefault()}>
-        {chat?.status && (
+      <form className={classes.MessageForm} onSubmit={onSubmitHandler}>
+        {activeChat?.status && (
           <Active
-            status={chat.status}
+            status={activeChat.status}
             email={email}
             clickHandler={clickHandler}
             isContinue={isContinue}
-            test={test}
+            setSelectMessage={setSelectMessage}
+            inputMessage={inputMessage}
+            selectMessage={selectMessage}
+            setInputMessage={setInputMessage}
+            autoComplete={autoComplete}
           />
         )}
       </form>
-
-      
     </div>
   );
 });

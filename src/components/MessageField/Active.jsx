@@ -1,22 +1,53 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Button from '../Button/Button';
 import Select from 'react-select';
 
-export default function Active({ status, isContinue, email, clickHandler }) {
-  const textButton = {
+const customStyles = {
+  option: (provided) => ({
+    ...provided,
+    borderBottom: '1px dotted pink',
+    padding: 10,
+  }),
+  container: () => ({
+    width: '100%',
+    position: 'relative',
+  }),
+  menuList: () => ({
+    width: '100%',
+  }),
+};
+
+export default function Active(props) {
+  const {
+    status,
+    isContinue,
+    email,
+    clickHandler,
+    setSelectMessage,
+    setInputMessage,
+    inputMessage,
+    selectMessage,
+    autoComplete
+  } = props;
+
+  const textButton = useRef({
     active: 'Продолжить чат',
     waiting: 'Войти в чат',
     save: 'Удалить чат',
     offline: 'Сохранить чат',
-  };
-
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-  ];
+  });
 
   const usl = status === 'active' && isContinue;
+
+  const onInputChange = (inputValue, { action }) => {
+    switch (action) {
+      case 'input-change':
+        setInputMessage(inputValue);
+        return;
+      default:
+        return;
+    }
+  };
 
   if (usl) {
     return (
@@ -24,14 +55,19 @@ export default function Active({ status, isContinue, email, clickHandler }) {
         <Select
           isMulti
           name="messange"
-          options={options}
-          // onInputChange={(e) => console.log(e)}
-          // onChange={(e) => console.log(e)}
-          classNamePrefix="select"
+          options={autoComplete}
+          inputValue={inputMessage}
+          value={selectMessage}
+          onInputChange={onInputChange}
+          onChange={(e) => setSelectMessage(e)}
+          styles={customStyles}
+          placeholder="Введите ваше сообщение"
+          noOptionsMessage={() => null}
+          menuPlacement={'auto'}
         />
-        <Button>Отправить сообщение</Button>
+        <Button type="submit">Отправить сообщение</Button>
       </>
     );
   }
-  return <Button onClick={() => clickHandler(status, email)}>{textButton[status]}</Button>;
+  return <Button onClick={() => clickHandler(status, email)}>{textButton.current[status]}</Button>;
 }

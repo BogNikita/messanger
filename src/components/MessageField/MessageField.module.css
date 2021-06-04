@@ -26,13 +26,3 @@ h2 {
   width: 100%;
 }
 
-.MessageForm div {
-  width: 100%;
-  margin: 0;
-  margin-right: 5px;
-}
-
-.MessageForm input {
-  background-color: #cecece;
-  margin: 0;
-}
