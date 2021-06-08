@@ -18,9 +18,6 @@ const customStyles = {
   menuList: () => ({
     width: '100%',
   }),
-  input: () => ({
-    padding: 10,
-  }),
 };
 
 export default function Active(props) {
@@ -34,6 +31,9 @@ export default function Active(props) {
     inputMessage,
     selectMessage,
     autoComplete,
+    pubnub,
+    channels,
+    isTyping,
   } = props;
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -55,10 +55,32 @@ export default function Active(props) {
     offline: 'Сохранить чат',
   });
 
+  const timeoutCache = useRef(0);
+
   const usl = status === 'active' && isContinue;
 
   const onInputChange = (inputValue, { action }) => {
-    if (action === 'input-change') {
+    clearInterval(timeoutCache.current)
+    if ((inputValue && !isTyping) || (!inputValue && isTyping)) {
+      pubnub.signal({
+        channel: 'typing',
+        message: {
+          typing: inputValue ? '1' : '0',
+          id: channels,
+        },
+      });
+    }
+    timeoutCache.current = setTimeout(() => {
+      pubnub.signal({
+        channel: 'typing',
+        message: {
+          typing: '0',
+          id: channels,
+        },
+      });
+    }, 5000);
+    
+    if (action === 'input-change' || action === 'add-emoji') {
       setInputMessage(inputValue);
       return;
     } else if (action === 'add-emoji') {
@@ -78,7 +100,7 @@ export default function Active(props) {
           options={autoComplete}
           inputValue={inputMessage}
           value={selectMessage}
-          onInputChange={(e, value, action) => onInputChange(e, value, action)}
+          onInputChange={(value, action) => onInputChange(value, action)}
           onChange={setSelectMessage}
           styles={customStyles}
           placeholder="Введите ваше сообщение"
@@ -92,7 +114,12 @@ export default function Active(props) {
             style={{ position: 'absolute', bottom: '45px', right: '0' }}
           />
         )}
-        <div className={classes.Emoji} onClick={() => setMenuIsOpen(!menuIsOpen)}>
+        <div
+          className={classes.Emoji}
+          onClick={() => {
+            setInputFocus();
+            setMenuIsOpen(!menuIsOpen);
+          }}>
           <i className="far fa-smile-beam"></i>
         </div>
         <div className={classes.MessageFormButton}>
