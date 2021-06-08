@@ -12,7 +12,7 @@ export default React.memo(function ListItem({ title, type }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const fetchChats = useCallback(
-    (count) => {
+    (count = 2) => {
       dispatch(fetchChatRequest(count, type));
     },
     [dispatch, type],
@@ -22,7 +22,10 @@ export default React.memo(function ListItem({ title, type }) {
     if (type === 'waiting') {
       setIsOpen(true);
     }
-    fetchChats(2);
+    fetchChats();
+    if (type === 'waiting' || type === 'active') {
+      setInterval(fetchChats, 30000)
+    }
   }, [type, fetchChats]);
 
   const clickHandler = useCallback(

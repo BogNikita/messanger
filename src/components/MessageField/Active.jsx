@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Button from '../Button/Button';
 import Select from 'react-select';
 import { Picker } from 'emoji-mart';
@@ -20,7 +20,7 @@ const customStyles = {
   }),
 };
 
-export default function Active(props) {
+export default React.memo(function Active(props) {
   const {
     status,
     isContinue,
@@ -37,6 +37,7 @@ export default function Active(props) {
   } = props;
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const timeoutCache = useRef(0);
 
   const useFocus = () => {
     const htmlElRef = useRef(null);
@@ -55,12 +56,10 @@ export default function Active(props) {
     offline: 'Сохранить чат',
   });
 
-  const timeoutCache = useRef(0);
+  const usl = useCallback(() => status === 'active' && isContinue, []);
 
-  const usl = status === 'active' && isContinue;
-
-  const onInputChange = (inputValue, { action }) => {
-    clearInterval(timeoutCache.current)
+  const onInputChange = useCallback((inputValue, { action }) => {
+    clearInterval(timeoutCache.current);
     if ((inputValue && !isTyping) || (!inputValue && isTyping)) {
       pubnub.signal({
         channel: 'typing',
@@ -79,7 +78,7 @@ export default function Active(props) {
         },
       });
     }, 5000);
-    
+
     if (action === 'input-change' || action === 'add-emoji') {
       setInputMessage(inputValue);
       return;
@@ -89,7 +88,7 @@ export default function Active(props) {
       return;
     }
     return;
-  };
+  }, [channels, pubnub, inputMessage, isTyping, setInputFocus, setInputMessage])
 
   if (usl) {
     return (
@@ -131,4 +130,4 @@ export default function Active(props) {
     );
   }
   return <Button onClick={() => clickHandler(status, email)}>{textButton.current[status]}</Button>;
-}
+});

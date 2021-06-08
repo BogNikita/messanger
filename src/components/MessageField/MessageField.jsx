@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePubNub } from 'pubnub-react';
-import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/activeChat';
+import { fetchAddNewMessage, fetchChangeChatStatus, getChat } from '../../store/action/activeChat';
 import { fetchAutoCompleteRequest } from '../../store/action/autoComplete';
 import Active from './Active';
 import MessageList from './MessageList';
@@ -11,6 +11,7 @@ import classes from './MessageField.module.css';
 
 export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
+  const { chatList } = useSelector((state) => state.chat);
   const autoComplete = useSelector((state) => state.autoComplete.messages);
   const { email } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -24,6 +25,13 @@ export default React.memo(function MessageField() {
     setIsContinue(false);
     dispatch(fetchAutoCompleteRequest());
   }, [activeChat.id, dispatch]);
+
+  useEffect(() => {
+    if (activeChat.status) {
+      const find = chatList[activeChat.status].chats.find((item) => item.id === activeChat.id);
+      dispatch(getChat(find));
+    }
+  }, [chatList, dispatch]);
 
   const clickHandler = useCallback(
     (status, email) => {
