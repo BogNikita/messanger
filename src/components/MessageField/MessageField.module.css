@@ -6,6 +6,20 @@
   flex-direction: column;
 }
 
+.HeaderWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-shadow: 0px -3px 5px -5px rgba(34, 60, 80, 0.6) inset;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.HeaderWrapper h2 {
+  margin: 0;
+  margin-right: 5px;
+}
+
 .Wrapper {
   display: flex;
   flex: 1 0 auto;
@@ -21,10 +35,6 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-}
-
-h2 {
-  box-shadow: 0px -3px 5px -5px rgba(34, 60, 80, 0.6) inset;
 }
 
 .MessageForm {

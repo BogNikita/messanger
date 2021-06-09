@@ -1,6 +1,8 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import throttle from 'lodash.throttle';
+import { usePubNub } from 'pubnub-react';
+import { chatTyping } from '../../store/action/chat';
 import { getChat } from '../../store/action/activeChat';
 import { logout } from '../../store/action/auth';
 import Input from '../Input/Input';
@@ -10,7 +12,7 @@ import TypeChatList from '../TypeChat/TypeChatList';
 import classes from './ChatField.module.css';
 
 export default function ChatField() {
-  const { chatList } = useSelector((state) => state.chat);
+  const { chatList, isSuccess } = useSelector((state) => state.chat);
   const dispatch = useDispatch();
 
   const [searchElements, setSearch] = useState([]);
@@ -23,6 +25,29 @@ export default function ChatField() {
     { type: 'offline', title: 'Завершенные' },
     { type: 'save', title: 'Сохраненные' },
   ]);
+
+  const timeoutCache = useRef(0);
+  const pubnub = usePubNub();
+
+  useEffect(() => {
+    if (isSuccess) {
+      pubnub.addListener({
+        signal: (s) => {
+          clearTimeout(timeoutCache.current);
+          if (s.message.typing === '0') {
+            dispatch(chatTyping(s.message.id, false));
+          }
+          if (s.message.typing === '1') {
+            dispatch(chatTyping(s.message.id, true));
+          }
+        },
+      });
+      pubnub.subscribe({ channels: ['typing'] });
+    }
+    return () => {
+      pubnub.unsubscribeAll();
+    };
+  }, [isSuccess, dispatch, pubnub]);
 
   const handleChange = useMemo(
     () =>

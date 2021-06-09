@@ -5,7 +5,6 @@ import ChatField from '../components/ChatField/ChatField';
 import MessageField from '../components/MessageField/MessageField';
 import classes from './Page.module.css';
 
-
 export default function MainPage() {
   const { token } = useSelector((state) => ({
     token: state.auth.token,

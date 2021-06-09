@@ -4,6 +4,7 @@ import {
   FETCH_CHAT_FAILURE,
   CHANGE_CHAT_STATUS,
   ADD_NEW_MESSAGE,
+  CHAT_TYPING,
 } from '../action/action.type';
 
 const initialState = {
@@ -60,18 +61,36 @@ export default function chatList(state = initialState, action) {
       };
     case ADD_NEW_MESSAGE:
       const newStateActive = JSON.parse(JSON.stringify(state.chatList.active.chats));
-      const findChat = newStateActive.find((chat) => chat.id === action.id);
-      findChat.messages = [...findChat.messages, action.newMessage];
-      newStateActive[action.id] = findChat;
+      const findChatIndex = newStateActive.findIndex((chat) => chat.id === action.id);
+      newStateActive[findChatIndex].messages = [
+        ...newStateActive[findChatIndex].messages,
+        action.newMessage,
+      ];
       return {
         ...state,
         chatList: {
           ...state.chatList,
           active: {
+            ...state.chatList.active,
             chats: [...newStateActive],
           },
         },
       };
+    case CHAT_TYPING: {
+      const newStateTyping = JSON.parse(JSON.stringify(state.chatList.active.chats));
+      const findChatTypingIndex = newStateTyping.findIndex((chat) => chat.id === action.id);
+      newStateTyping[findChatTypingIndex].typing = action.value;
+      return {
+        ...state,
+        chatList: {
+          ...state.chatList,
+          active: {
+            ...state.chatList.active,
+            chats: [...newStateTyping],
+          },
+        },
+      };
+    }
     default:
       return state;
   }
