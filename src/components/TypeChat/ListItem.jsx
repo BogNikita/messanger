@@ -9,10 +9,11 @@ import classes from './TypeChat.module.css';
 export default React.memo(function ListItem({ title, type }) {
   const { hasMore, chats } = useSelector((state) => state.chat.chatList[type]);
   const dispatch = useDispatch();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const fetchChats = useCallback(
-    (count) => {
+    (count = 2) => {
       dispatch(fetchChatRequest(count, type));
     },
     [dispatch, type],
@@ -22,7 +23,10 @@ export default React.memo(function ListItem({ title, type }) {
     if (type === 'waiting') {
       setIsOpen(true);
     }
-    fetchChats(2);
+    fetchChats();
+    if (type === 'waiting' || type === 'active') {
+      setInterval(fetchChats, 30000)
+    }
   }, [type, fetchChats]);
 
   const clickHandler = useCallback(

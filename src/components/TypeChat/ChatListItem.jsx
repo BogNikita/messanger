@@ -15,8 +15,8 @@ export default function ChatListItem({ chat, clickHandler }) {
       <div className={classes.LastMessage}>{content}</div>
       <div
         className={classes.Time}
-        style={{ justifyContent: chat.typing ? 'space-between' : 'flex-end' }}>
-        {chat.typing && <TypingIndicator />}
+        style={{ justifyContent: chat.isTyping ? 'space-between' : 'flex-end' }}>
+        {chat.isTyping && <TypingIndicator />}
         <time>{moment(timestamp).fromNow()}</time>
       </div>
     </li>

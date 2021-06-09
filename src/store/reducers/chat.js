@@ -79,7 +79,7 @@ export default function chatList(state = initialState, action) {
     case CHAT_TYPING: {
       const newStateTyping = JSON.parse(JSON.stringify(state.chatList.active.chats));
       const findChatTypingIndex = newStateTyping.findIndex((chat) => chat.id === action.id);
-      newStateTyping[findChatTypingIndex].typing = action.value;
+      newStateTyping[findChatTypingIndex].isTyping = action.value;
       return {
         ...state,
         chatList: {

@@ -10,6 +10,7 @@ import Dropdown from '../Dropdown/Dropdown';
 import Button from '../Button/Button';
 import TypeChatList from '../TypeChat/TypeChatList';
 import classes from './ChatField.module.css';
+import ProfileEditModal from '../ProfileEditModal/ProfileEditModal';
 
 export default function ChatField() {
   const { chatList, isSuccess } = useSelector((state) => state.chat);
@@ -18,6 +19,7 @@ export default function ChatField() {
   const [searchElements, setSearch] = useState([]);
   const [searchId, setSearchId] = useState([]);
   const [valueSearch, setValueSearch] = useState('content');
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   const typeChats = useRef([
     { type: 'waiting', title: 'В ожидании' },
@@ -92,13 +94,16 @@ export default function ChatField() {
   return (
     <div className={classes.ChatList}>
       <div className={classes.TopWrapper}>
+        <div className={classes.ModalButton} onClick={() => setIsOpen(!modalIsOpen)}>
+          <i className="fas fa-bars"></i>
+        </div>
         <select className={classes.select} onChange={(e) => setValueSearch(e.target.value)}>
           <option value="content">text</option>
           <option value="writtenBy">client</option>
         </select>
         <Input name="search" onChange={handleChange} />
       </div>
-
+      <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
       {searchElements.length ? (
         <Dropdown
           id={searchId}
