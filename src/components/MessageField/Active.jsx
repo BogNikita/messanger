@@ -18,6 +18,9 @@ const customStyles = {
   menuList: () => ({
     width: '100%',
   }),
+  valueContainer: () => ({
+    padding: 10
+  })
 };
 
 export default React.memo(function Active(props) {
@@ -56,7 +59,7 @@ export default React.memo(function Active(props) {
     offline: 'Сохранить чат',
   });
 
-  const usl = useCallback(() => status === 'active' && isContinue, []);
+  const usl = status === 'active' && isContinue;
 
   const onInputChange = useCallback((inputValue, { action }) => {
     clearInterval(timeoutCache.current);
@@ -78,8 +81,7 @@ export default React.memo(function Active(props) {
         },
       });
     }, 5000);
-
-    if (action === 'input-change' || action === 'add-emoji') {
+    if (action === 'input-change') {
       setInputMessage(inputValue);
       return;
     } else if (action === 'add-emoji') {

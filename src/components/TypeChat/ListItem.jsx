@@ -9,6 +9,7 @@ import classes from './TypeChat.module.css';
 export default React.memo(function ListItem({ title, type }) {
   const { hasMore, chats } = useSelector((state) => state.chat.chatList[type]);
   const dispatch = useDispatch();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const fetchChats = useCallback(

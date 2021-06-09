@@ -6,4 +6,10 @@
   min-width: 170px;
   color: #fff;
   cursor: pointer;
+  transition: opacity ease-in .2s;
+}
+
+.button-primary:hover {
+  opacity: 0.7;
+  transition: opacity ease-in .2s;
 }

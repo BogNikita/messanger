@@ -10,10 +10,6 @@
   align-items: center;
 }
 
-.TopWrapper div {
-  margin: 0;
-}
-
 .TopWrapper input {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -32,5 +28,21 @@
   font-weight: normal;
 }
 
+.ModalButton {
+  margin-right: 10px;
+  font-size: x-large;
+  color: #fff;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity ease-in .2s;
+}
 
+.ModalButton:hover {
+  opacity: 0.5;
+  transition: opacity ease-in .2s;
+}
 
+.ModalForm {
+  display: flex;
+  flex-direction: column;
+}
