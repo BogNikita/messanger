@@ -1,4 +1,4 @@
-.button-primary {
+.ButtonPrimary {
   background: linear-gradient(160.64deg, #2d9cdb 0%, #0098ee 0.01%, #54b6ed 100%);
   border-radius: 5px;
   border: none;
@@ -9,7 +9,7 @@
   transition: opacity ease-in .2s;
 }
 
-.button-primary:hover {
+.ButtonPrimary:hover {
   opacity: 0.7;
   transition: opacity ease-in .2s;
 }

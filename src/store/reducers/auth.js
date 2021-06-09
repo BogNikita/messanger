@@ -3,15 +3,18 @@ import {
   FETCH_AUTH_SUCCESS,
   FETCH_AUTH_FAILURE,
   AUTH_LOGOUT,
+  CHANGE_AVATAR,
+  UPDATE_PROFILE,
 } from '../action/action.type';
 
 const initialState = {
-  token: null,
+  user: null,
   isPending: null,
   isSuccess: null,
   isError: null,
   errorMessage: '',
-  email: null
+  email: null,
+  token: null
 };
 
 export default function auth(state = initialState, action) {
@@ -25,11 +28,13 @@ export default function auth(state = initialState, action) {
     case FETCH_AUTH_SUCCESS:
       return {
         ...state,
-        token: action.token,
+        user: action.user,
         isPending: false,
         isSuccess: true,
         errorMessage: '',
-        email: action.email
+        isError: false,
+        email: action.email,
+        token: action.user.uid
       };
     case FETCH_AUTH_FAILURE:
       return {
@@ -41,8 +46,24 @@ export default function auth(state = initialState, action) {
     case AUTH_LOGOUT: {
       return {
         ...state,
-        token: null,
+        user: null,
         email: null
+      }
+    }
+    case CHANGE_AVATAR: {
+      return {
+        ...state,
+        user: {
+          ...state.user, photoURL: action.photoURL
+        }
+      }
+    }
+    case UPDATE_PROFILE: {
+      return {
+        ...state,
+        user: {
+          ...state.user, photoURL: action.photoURL, displayName: action.displayName
+        }
       }
     }
     default:
