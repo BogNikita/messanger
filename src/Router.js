@@ -5,9 +5,7 @@ import MainPage from './pages/MainPage';
 import SignupPage from './pages/SignupPage';
 
 export default function Router() {
-  const { token } = useSelector((state) => ({
-    token: state.auth.token,
-  }));
+  const { token } = useSelector((state) => state.auth);
 
   if (token) {
     return (

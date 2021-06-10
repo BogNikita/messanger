@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react';
+import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import throttle from 'lodash.throttle';
 import { usePubNub } from 'pubnub-react';
@@ -28,28 +28,28 @@ export default function ChatField() {
     { type: 'save', title: 'Сохраненные' },
   ]);
 
-  const timeoutCache = useRef(0);
   const pubnub = usePubNub();
+
+  const typingSignal = useCallback((s) => {
+    if (s.message.typing === '0') {
+      dispatch(chatTyping(s.message.id, false));
+    }
+    if (s.message.typing === '1') {
+      dispatch(chatTyping(s.message.id, true));
+    }
+  }, [])
 
   useEffect(() => {
     if (isSuccess) {
       pubnub.addListener({
-        signal: (s) => {
-          clearTimeout(timeoutCache.current);
-          if (s.message.typing === '0') {
-            dispatch(chatTyping(s.message.id, false));
-          }
-          if (s.message.typing === '1') {
-            dispatch(chatTyping(s.message.id, true));
-          }
-        },
+        signal: typingSignal
       });
       pubnub.subscribe({ channels: ['typing'] });
     }
     return () => {
       pubnub.unsubscribeAll();
     };
-  }, [isSuccess, dispatch, pubnub]);
+  }, [isSuccess, typingSignal, pubnub]);
 
   const handleChange = useMemo(
     () =>
@@ -103,7 +103,7 @@ export default function ChatField() {
         </select>
         <Input name="search" onChange={handleChange} />
       </div>
-      <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
+      {modalIsOpen && <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />}
       {searchElements.length ? (
         <Dropdown
           id={searchId}

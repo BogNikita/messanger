@@ -1,9 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
-import Button from '../Button/Button';
 import Select from 'react-select';
 import { Picker } from 'emoji-mart';
-import 'emoji-mart/css/emoji-mart.css';
+import Button from '../Button/Button';
 import classes from './MessageField.module.css';
+import 'emoji-mart/css/emoji-mart.css';
 
 const customStyles = {
   option: (provided) => ({
@@ -90,7 +90,8 @@ export default React.memo(function Active(props) {
       return;
     }
     return;
-  }, [channels, pubnub, inputMessage, isTyping, setInputFocus, setInputMessage])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channels, pubnub, inputMessage, isTyping])
 
   if (usl) {
     return (
