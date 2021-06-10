@@ -103,7 +103,7 @@ export default function ChatField() {
         </select>
         <Input name="search" onChange={handleChange} />
       </div>
-      <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
+      {modalIsOpen && <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />}
       {searchElements.length ? (
         <Dropdown
           id={searchId}

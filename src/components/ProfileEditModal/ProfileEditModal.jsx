@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import Modal from 'react-modal';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
+import { fetchChangeAvatar, fetchUpdateProfile } from '../../store/action/auth';
+import Modal from 'react-modal';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import classes from './ProfileEditModal.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchChangeAvatar, fetchUpdateProfile } from '../../store/action/auth';
 
 const customStyles = {
   content: {
@@ -19,17 +19,9 @@ const customStyles = {
 };
 Modal.setAppElement('#root');
 
-const required = (value) => (value ? undefined : 'Поле не должно быть пустым');
-const minLength = (value) => {
-  if (value) {
-    return value.length > 5 ? undefined : 'Минимальная длина пароля 6 символов';
-  } else return undefined;
-};
-const isEqual = (password) => (value) => {
-  if (value) {
-    return value === password ? undefined : 'Пароли должны совпадать';
-  } else return undefined;
-};
+const required = (value) => !value && 'Поле не должно быть пустым';
+const minLength = (value) => value?.length < 5 && 'Минимальная длина пароля 6 символов';
+const isEqual = (password) => (value) => value !== password && 'Пароли должны совпадать';
 
 export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
   const { displayName, photoURL } = useSelector((state) => state.auth.user);
@@ -42,7 +34,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
     setIsOpen(false);
   };
 
-  const onSubmitHandler = ({displayName, password, photoURL}) => {
+  const onSubmitHandler = ({ displayName, password, photoURL }) => {
     dispatch(fetchUpdateProfile(displayName, photoURL, password))
     if (!isError) {
       closeModal()
@@ -83,10 +75,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
               validate={required}
               defaultValue={displayName ? displayName : ''}>
               {({ input, meta }) => (
-                <>
-                  <Input {...input} type="text" title="Имя" />
-                  {meta.error && meta.touched && <span>{meta.error}</span>}
-                </>
+                <Input {...input} type="text" title="Имя" errors={meta.error} />
               )}
             </Field>
             <Field name="photo">
@@ -110,25 +99,20 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
                 </>
               )}
             </Field>
-            <Field name="password" validate={minLength} defaultValue="">
+            <Field name="password" validate={minLength}>
               {({ input, meta }) => (
-                <>
-                  <Input {...input} type="password" title="Пароль" />
-                  {meta.error && meta.touched && <span>{meta.error}</span>}
-                </>
+                <Input {...input} type="password" title="Пароль" errors={meta.error} />
               )}
             </Field>
             <Field name="repeat_password" validate={isEqual(values.password)}>
               {({ input, meta }) => (
-                <>
-                  <Input {...input} type="password" title="Повторите пароль" />
-                  {meta.error && meta.touched && <span>{meta.error}</span>}
-                </>
+                <Input {...input} type="password" title="Повторите пароль" errors={meta.error} />
               )}
             </Field>
             <div className={classes.ModalSubmitButton}>
               <Button type="submit">Обновить данные</Button>
             </div>
+            {isError && <span className={classes.ErrorMessage}>{errorMessage}</span>}
           </form>
         )}
       />

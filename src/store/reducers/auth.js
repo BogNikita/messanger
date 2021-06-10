@@ -47,7 +47,8 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         user: null,
-        email: null
+        email: null,
+        token: null
       }
     }
     case CHANGE_AVATAR: {
