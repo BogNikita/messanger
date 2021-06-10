@@ -9,8 +9,8 @@ import Input from '../Input/Input';
 import Dropdown from '../Dropdown/Dropdown';
 import Button from '../Button/Button';
 import TypeChatList from '../TypeChat/TypeChatList';
-import classes from './ChatField.module.css';
 import ProfileEditModal from '../ProfileEditModal/ProfileEditModal';
+import classes from './ChatField.module.css';
 
 export default function ChatField() {
   const { chatList, isSuccess } = useSelector((state) => state.chat);
@@ -37,12 +37,12 @@ export default function ChatField() {
     if (s.message.typing === '1') {
       dispatch(chatTyping(s.message.id, true));
     }
-  }, [])
+  }, [dispatch]);
 
   useEffect(() => {
     if (isSuccess) {
       pubnub.addListener({
-        signal: typingSignal
+        signal: typingSignal,
       });
       pubnub.subscribe({ channels: ['typing'] });
     }
@@ -95,7 +95,7 @@ export default function ChatField() {
     <div className={classes.ChatList}>
       <div className={classes.TopWrapper}>
         <div className={classes.ModalButton} onClick={() => setIsOpen(!modalIsOpen)}>
-          <i className="fas fa-bars"></i>
+          <i className="fas fa-user-edit"></i>
         </div>
         <select className={classes.select} onChange={(e) => setValueSearch(e.target.value)}>
           <option value="content">text</option>
