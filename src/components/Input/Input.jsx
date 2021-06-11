@@ -10,6 +10,7 @@ export default React.memo(function Input({
   placeholder,
   onBlur,
   errors,
+  defaultValue
 }) {
   return (
     <>
@@ -25,6 +26,7 @@ export default React.memo(function Input({
             onBlur={onBlur}
             value={value}
             autoComplete="off"
+            defaultValue={defaultValue}
           />
           {errors && <span className={classes['input-error']}>{errors}</span>}
         </div>

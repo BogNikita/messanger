@@ -8,6 +8,8 @@ import MessageList from './MessageList';
 import DialogIsOver from '../DialogIsOver/DialogIsOver';
 import TypingIndicator from '../TypingIndicator/TypingIndicator';
 import classes from './MessageField.module.css';
+import Button from '../Button/Button';
+import DialogSettings from '../DialogSettings/DialogSettings';
 
 export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
@@ -20,6 +22,7 @@ export default React.memo(function MessageField() {
   const [selectMessage, setSelectMessage] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isContinue, setIsContinue] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsContinue(false);
@@ -69,8 +72,11 @@ export default React.memo(function MessageField() {
   return (
     <div className={classes.MessageField}>
       <div className={classes.HeaderWrapper}>
-        <h2>{activeChat?.messages[0]?.writtenBy || 'Добро пожаловать'}</h2>
-        {activeChat.isTyping && <TypingIndicator />}
+        <div>
+          <h2>{activeChat?.messages[0]?.writtenBy || 'Добро пожаловать'}</h2>
+          {activeChat.isTyping && <TypingIndicator />}
+        </div>
+        <DialogSettings modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
       </div>
       <div className={classes.Wrapper}>
         <div className={classes.WrapperMessageList}>

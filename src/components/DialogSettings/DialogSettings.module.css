@@ -1,0 +1,75 @@
+.ModalHeaderWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ModalCloseButton {
+  background: inherit;
+  border: none;
+  padding: 10px;
+  font-size: x-large;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity ease-in 0.2s;
+}
+
+.ModalCloseButton:hover {
+  opacity: 0.5;
+  transition: opacity ease-in 0.2s;
+}
+
+.DialogSettingsList * {
+  transition: 0.2s linear;
+}
+.DialogSettingsList {
+  background: white;
+  list-style-type: circle;
+  list-style-position: inside;
+  padding: 0 10px;
+  margin: 0;
+}
+
+.DialogSettingsList button {
+    display: block;
+    margin-top: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.DialogSettingsListItem {
+  font-family: 'Trebuchet MS', 'Lucida Sans';
+  border-bottom: 1px solid #efefef;
+  padding: 10px 0;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.DialogSettingsListItem div:first-child > div, .DialogSettingsListItem div:first-child {
+    width: 100%;
+}
+.DialogSettingsListItemIcon {
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: x-large;
+}
+
+.DialogSettingsListItemIcon:hover {
+  opacity: 0.5;
+}
+
+.DialogSettingsButton {
+  font-size: x-large;
+  cursor: pointer;
+  transition: opacity ease-in 0.2s;
+}
+
+.DialogSettingsButton:hover {
+  opacity: 0.5;
+  transition: opacity ease-in 0.2s;
+}
+
+.DialogSettingsListItemContent {
+    padding: 5px;
+}
