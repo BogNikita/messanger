@@ -26,7 +26,7 @@ export default React.memo(function MessageField() {
   useEffect(() => {
     setIsContinue(false);
     dispatch(fetchUserDialogSettingsRequest(token));
-  }, [activeChat.id, dispatch]);
+  }, [activeChat.id, dispatch, token]);
 
   useEffect(() => {
     if (activeChat.status) {
