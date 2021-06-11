@@ -2,12 +2,12 @@ import React from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, FieldArray } from 'formik';
+import { fetchUserDialogSettingsUpdate } from '../../store/action/userDialogSettings';
+import Error from '../Error/Error';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import AutoCompleteMessage from './AutoCompleteMessage';
 import classes from './DialogSettings.module.css';
-import { fetchUserDialogSettingsUpdate } from '../../store/action/userDialogSettings';
-import Error from '../Error/Error';
 
 const customStyles = {
   content: {
@@ -24,7 +24,9 @@ const customStyles = {
 Modal.setAppElement('#root');
 
 export default function DialogSettings({ modalIsOpen, setIsOpen }) {
-  const { messages, autoGreeting, isError, errorMessage } = useSelector((state) => state.userDialogSettings);
+  const { messages, autoGreeting, isError, errorMessage } = useSelector(
+    (state) => state.userDialogSettings,
+  );
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -111,7 +113,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
               <Button style={classes.DialogSettingsButtonSubmit} type="submit">
                 Сохранить изменения
               </Button>
-            {isError && <Error message={errorMessage}/>}
+              {isError && <Error message={errorMessage} />}
             </Form>
           )}
         </Formik>
