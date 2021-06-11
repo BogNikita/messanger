@@ -33,6 +33,7 @@ export default React.memo(function MessageField() {
       const find = chatList[activeChat.status].chats.find((item) => item.id === activeChat.id);
       dispatch(getChat(find));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatList, dispatch]);
 
   const clickHandler = useCallback(
