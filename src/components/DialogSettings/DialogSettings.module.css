@@ -31,10 +31,10 @@
 }
 
 .DialogSettingsList button {
-    display: block;
-    margin-top: 10px;
-    margin-right: auto;
-    margin-left: auto;
+  display: block;
+  margin-top: 10px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .DialogSettingsListItem {
@@ -46,8 +46,9 @@
   justify-content: space-between;
   align-items: center;
 }
-.DialogSettingsListItem div:first-child > div, .DialogSettingsListItem div:first-child {
-    width: 100%;
+.DialogSettingsListItem div:first-child > div,
+.DialogSettingsListItem div:first-child {
+  width: 100%;
 }
 .DialogSettingsListItemIcon {
   cursor: pointer;
@@ -71,5 +72,10 @@
 }
 
 .DialogSettingsListItemContent {
-    padding: 5px;
+  padding: 5px;
+}
+
+.DialogSettingsButtonSubmit {
+  display: block;
+  margin: 10px auto;
 }

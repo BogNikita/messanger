@@ -1,10 +1,13 @@
 import React from 'react';
 import Modal from 'react-modal';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Formik, Form, Field, FieldArray } from 'formik';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import AutoCompleteMessage from './AutoCompleteMessage';
 import classes from './DialogSettings.module.css';
+import { fetchUserDialogSettingsUpdate } from '../../store/action/userDialogSettings';
+import Error from '../Error/Error';
 
 const customStyles = {
   content: {
@@ -21,15 +24,30 @@ const customStyles = {
 Modal.setAppElement('#root');
 
 export default function DialogSettings({ modalIsOpen, setIsOpen }) {
-  const { messages } = useSelector((state) => state.autoComplete);
+  const { messages, autoGreeting, isError, errorMessage } = useSelector((state) => state.userDialogSettings);
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  function openModal() {
-      setIsOpen(true)
-  }
+  const openModal = () => {
+    setIsOpen(true);
+  };
 
-  function closeModal() {
+  const closeModal = () => {
     setIsOpen(false);
-  }
+  };
+
+  const onSubmitHandler = ({ messages, autoGreeting }) => {
+    const message = messages.filter((item) => {
+      if (item) {
+        item.value = item.label.toLowerCase();
+      }
+      return item;
+    });
+    dispatch(fetchUserDialogSettingsUpdate(token, message, autoGreeting));
+    if (!isError) {
+      closeModal();
+    }
+  };
 
   return (
     <div>
@@ -48,17 +66,55 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
             <i className="fas fa-times"></i>
           </button>
         </div>
-
-        <ul className={classes.DialogSettingsList}>
-          <h3>Готовые фразы:</h3>
-          {messages?.map((item, i) => (
-            <AutoCompleteMessage key={`${item.label}_${i}`} message={item.label} />
-          ))}
-          <Button>Добавить еще</Button>
-        </ul>
-        <form>
-            <Input title='Автоматическое приветствие' placeholder='Введите сообщение при входе в диалог'/>
-        </form>
+        <Formik initialValues={{ messages, autoGreeting }} onSubmit={onSubmitHandler}>
+          {({ values }) => (
+            <Form className="test">
+              <FieldArray
+                name="messages"
+                render={(arrayHelpers) => (
+                  <ul className={classes.DialogSettingsList}>
+                    <h3>Готовые фразы:</h3>
+                    {values.messages && values.messages.length > 0 ? (
+                      values.messages.map((messages, index) => (
+                        <AutoCompleteMessage
+                          key={index}
+                          name={`messages.${index}.label`}
+                          index={index}
+                          removeItem={arrayHelpers.remove}
+                        />
+                      ))
+                    ) : (
+                      <span>У вас пока нет готовых сообщений</span>
+                    )}
+                    <div>
+                      <Button type="button" onClick={() => arrayHelpers.push('')}>
+                        Добавить сообщения
+                      </Button>
+                    </div>
+                  </ul>
+                )}
+              />
+              <FieldArray
+                name="autoGreeting"
+                render={() => (
+                  <Field name="autoGreeting">
+                    {({ field }) => (
+                      <Input
+                        title="Автоматическое приветствие"
+                        placeholder="Введите сообщение при входе в диалог"
+                        {...field}
+                      />
+                    )}
+                  </Field>
+                )}
+              />
+              <Button style={classes.DialogSettingsButtonSubmit} type="submit">
+                Сохранить изменения
+              </Button>
+            {isError && <Error message={errorMessage}/>}
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </div>
   );

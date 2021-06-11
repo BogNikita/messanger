@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import classes from './ProfileEditModal.module.css';
+import Error from '../Error/Error';
 
 const customStyles = {
   content: {
@@ -112,7 +113,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
             <div className={classes.ModalSubmitButton}>
               <Button type="submit">Обновить данные</Button>
             </div>
-            {isError && <span className={classes.ErrorMessage}>{errorMessage}</span>}
+            {isError && <Error message={errorMessage}/>}
           </form>
         )}
       />
