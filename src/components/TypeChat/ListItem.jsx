@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import { fetchChatRequest } from '../../store/action/chat';
-import { getChat } from '../../store/action/activeChat';
 import InfiniteScroll from 'react-infinite-scroller';
 import ChatList from './ChatList';
 import classes from './TypeChat.module.css';
@@ -9,7 +9,7 @@ import classes from './TypeChat.module.css';
 export default React.memo(function ListItem({ title, type }) {
   const { hasMore, chats } = useSelector((state) => state.chat.chatList[type]);
   const dispatch = useDispatch();
-
+  const history = useHistory();
   const [isOpen, setIsOpen] = useState(false);
 
   const fetchChats = useCallback(
@@ -25,15 +25,15 @@ export default React.memo(function ListItem({ title, type }) {
     }
     fetchChats();
     if (type === 'waiting' || type === 'active') {
-      setInterval(fetchChats, 30000)
+      setInterval(fetchChats, 30000);
     }
   }, [type, fetchChats]);
 
   const clickHandler = useCallback(
     (chat) => {
-      dispatch(getChat(chat));
+      history.push(`/${type}/${chat.id}`);
     },
-    [dispatch],
+    [type],
   );
 
   return (

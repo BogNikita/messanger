@@ -101,11 +101,13 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                 render={() => (
                   <Field name="autoGreeting">
                     {({ field }) => (
-                      <Input
-                        title="Автоматическое приветствие"
-                        placeholder="Введите сообщение при входе в диалог"
-                        {...field}
-                      />
+                      <div className={classes.DialogSettingsAutoGreeting}>
+                        <Input
+                          title="Автоматическое приветствие"
+                          placeholder="Введите сообщение при входе в диалог"
+                          {...field}
+                        />
+                      </div>
                     )}
                   </Field>
                 )}

@@ -1,9 +1,9 @@
 import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import throttle from 'lodash.throttle';
 import { usePubNub } from 'pubnub-react';
 import { chatTyping } from '../../store/action/chat';
-import { getChat } from '../../store/action/activeChat';
 import { logout } from '../../store/action/auth';
 import Input from '../Input/Input';
 import Dropdown from '../Dropdown/Dropdown';
@@ -29,15 +29,19 @@ export default function ChatField() {
   ]);
 
   const pubnub = usePubNub();
+  const history = useHistory();
 
-  const typingSignal = useCallback((s) => {
-    if (s.message.typing === '0') {
-      dispatch(chatTyping(s.message.id, false));
-    }
-    if (s.message.typing === '1') {
-      dispatch(chatTyping(s.message.id, true));
-    }
-  }, [dispatch]);
+  const typingSignal = useCallback(
+    (s) => {
+      if (s.message.typing === '0') {
+        dispatch(chatTyping(s.message.id, false));
+      }
+      if (s.message.typing === '1') {
+        dispatch(chatTyping(s.message.id, true));
+      }
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     if (isSuccess) {
@@ -82,7 +86,7 @@ export default function ChatField() {
     for (const key in chatList) {
       const chat = chatList[key].chats.find((chat) => chat.id === id);
       if (chat) {
-        dispatch(getChat(chat));
+        history.push(`/${key}/${id}`);
       }
     }
   };
@@ -91,15 +95,25 @@ export default function ChatField() {
     dispatch(logout());
   };
 
+  const searchSelectOption = useRef([
+    {
+      label: 'Поиск по тексту',
+      value: 'content',
+    },
+    {
+      label: 'Поиск по автору',
+      value: 'writtenBy',
+    },
+  ]);
   return (
     <div className={classes.ChatList}>
       <div className={classes.TopWrapper}>
         <div className={classes.ModalButton} onClick={() => setIsOpen(!modalIsOpen)}>
           <i className="fas fa-user-edit"></i>
         </div>
-        <select className={classes.select} onChange={(e) => setValueSearch(e.target.value)}>
-          <option value="content">text</option>
-          <option value="writtenBy">client</option>
+        <select className={classes.CustomSelect} onChange={(e) => setValueSearch(e.target.value)}>
+          <option value="content">Поиск по тексту</option>
+          <option value="writtenBy">Поиск по автору</option>
         </select>
         <Input name="search" onChange={handleChange} />
       </div>

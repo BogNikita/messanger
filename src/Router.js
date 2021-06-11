@@ -14,6 +14,11 @@ export default function Router() {
           <Route exact path="/">
             <MainPage />
           </Route>
+          <Route
+            exact
+            path="/:status/:chatId"
+            render={(obj) => <MainPage status={obj.match.params.status} chatId={obj.match.params.chatId} />}
+          />
           <Redirect to="/" />
         </Switch>
       </BrowserRouter>
