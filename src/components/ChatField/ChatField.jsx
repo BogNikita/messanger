@@ -146,10 +146,6 @@ export default function ChatField() {
         <div className={classes.ModalButton} onClick={() => setIsOpen(!modalIsOpen)}>
           <i className="fas fa-user-edit"></i>
         </div>
-        {/* <select className={classes.CustomSelect} onChange={(e) => setValueSearch(e.target.value)}>
-          <option value="content">Поиск по тексту</option>
-          <option value="writtenBy">Поиск по автору</option>
-        </select> */}
         <Select
           name="option-search"
           options={searchSelectOption.current}
