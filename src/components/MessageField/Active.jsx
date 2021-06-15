@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useRef, useState } from 'react';
 import Select from 'react-select';
 import { Picker } from 'emoji-mart';

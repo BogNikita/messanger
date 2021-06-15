@@ -17,7 +17,8 @@ export default function MainPage() {
       history.push('/auth');
     }
     dispatch(fetchUserDialogSettingsRequest(token));
-  }, [history, token]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   return (
     <div className={classes.MainLayout}>
