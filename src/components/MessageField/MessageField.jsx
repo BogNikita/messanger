@@ -22,16 +22,19 @@ export default React.memo(function MessageField({ status, chatId }) {
 
   const [selectMessage, setSelectMessage] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [imgMessage, setImgMessage] = useState('');
   const [isContinue, setIsContinue] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [isImgInput, setImgInput] = useState(false);
+
   const activeChat = chatList[status]?.chats.find((chat) => chat.id === +chatId);
 
-  const prevStatus = useRef(status)
+  const prevStatus = useRef(status);
 
   useEffect(() => {
     setIsContinue(false);
     if (prevStatus.current === 'waiting') {
-      setIsContinue(true)
+      setIsContinue(true);
     }
   }, [chatId]);
 
@@ -58,26 +61,29 @@ export default React.memo(function MessageField({ status, chatId }) {
   );
 
   const sendMessage = useCallback(
-    (content, imgSrc = '') => {
+    (content) => {
       const newMessage = {
         content,
-        imgSrc,
+        imgSrc: imgMessage,
         timestamp: Date.now(),
         writtenBy: email,
       };
       dispatch(fetchAddNewMessage(+chatId, newMessage, activeChat.messages.length));
     },
-    [email, activeChat, chatId],
+    [email, activeChat, chatId, imgMessage],
   );
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    if (inputMessage || selectMessage.length) {
-      let content = selectMessage?.reduce((acc, item) => acc + ' ' + item.label, '') || '';
-      content += ' ' + inputMessage;
+    if (inputMessage || selectMessage.length || imgMessage) {
+      const SelectMessageToStr =
+        selectMessage?.reduce((acc, item) => acc + ' ' + item.label, '') || '';
+      const content = `${SelectMessageToStr} ${inputMessage}`.trim();
       sendMessage(content);
       setInputMessage('');
-      setSelectMessage(null);
+      setSelectMessage([]);
+      setImgMessage('');
+      setImgInput(false);
     }
   };
 
@@ -116,6 +122,10 @@ export default React.memo(function MessageField({ status, chatId }) {
             pubnub={pubnub}
             channels={activeChat.id}
             isTyping={activeChat.isTyping}
+            setImgMessage={setImgMessage}
+            imgMessage={imgMessage}
+            isImgInput={isImgInput}
+            setImgInput={setImgInput}
           />
         )}
       </form>
