@@ -11,10 +11,11 @@
   margin: 5px 0;
   display: flex;
   justify-content: space-between;
+  width: 100%;
 }
 
 .input-wrapper div {
-  width: 280px;
+  min-width: 280px;
 }
 
 .input-wrapper label {

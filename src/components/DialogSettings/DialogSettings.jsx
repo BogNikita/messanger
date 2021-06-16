@@ -88,9 +88,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                       <span>У вас пока нет готовых сообщений</span>
                     )}
                     <div>
-                      <Button
-                        type="button"
-                        onClick={() => arrayHelpers.push({ value: '', label: '' })}>
+                      <Button type="button" onClick={() => arrayHelpers.push()}>
                         Добавить сообщения
                       </Button>
                     </div>
@@ -106,6 +104,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                         <Input
                           title="Автоматическое приветствие"
                           placeholder="Введите сообщение при входе в диалог"
+                          widthInput='100%'
                           {...field}
                         />
                       </div>

@@ -10,13 +10,14 @@ export default React.memo(function Input({
   placeholder,
   onBlur,
   errors,
-  defaultValue
+  defaultValue,
+  widthInput
 }) {
   return (
     <>
       <div className={classes['input-wrapper']}>
         {title && <label htmlFor={name}>{title}:</label>}
-        <div>
+        <div style={{width: `${widthInput ? widthInput : ''}`}}>
           <input
             className={classes['primary-input']}
             name={name}
