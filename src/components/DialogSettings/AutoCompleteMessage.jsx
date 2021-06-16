@@ -8,10 +8,8 @@ export default React.memo(function AutoCompleteMessage({ removeItem, index, ...p
   return (
     <li className={classes.DialogSettingsListItem}>
       <Input {...field} {...props} title="Фраза" />
-      <div>
-        <span className={classes.DialogSettingsListItemIcon} onClick={() => removeItem(index)}>
-          <i className="far fa-trash-alt"></i>
-        </span>
+      <div className={classes.DialogSettingsListItemIcon} onClick={() => removeItem(index)}>
+        <i className="far fa-trash-alt"></i>
       </div>
     </li>
   );
