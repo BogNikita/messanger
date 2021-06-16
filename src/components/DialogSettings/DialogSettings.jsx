@@ -39,12 +39,11 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
   };
 
   const onSubmitHandler = ({ messages, autoGreeting }) => {
-    const prepareMessages = messages.filter((item) => {
-      if (item) {
-        item.value = item.label.toLowerCase();
-      }
-      return item;
-    });
+    const sortMessages = messages.filter((item) => !!item.label);
+    const prepareMessages = sortMessages.map(({ label }) => ({
+      label,
+      value: label.toLowerCase(),
+    }));
     dispatch(fetchUserDialogSettingsUpdate(token, prepareMessages, autoGreeting));
     if (!isError) {
       closeModal();
