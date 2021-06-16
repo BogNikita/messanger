@@ -2,10 +2,10 @@
 import React, { useCallback, useRef, useState } from 'react';
 import Select from 'react-select';
 import { Picker } from 'emoji-mart';
+import Input from '../Input/Input';
 import Button from '../Button/Button';
 import classes from './MessageField.module.css';
 import 'emoji-mart/css/emoji-mart.css';
-import Input from '../Input/Input';
 
 const customStyles = {
   option: (provided) => ({

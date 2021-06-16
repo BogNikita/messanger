@@ -20,7 +20,7 @@ const customStyles = {
     padding: 10,
   }),
   control: () => ({
-    minWidth: 170,
+    minWidth: 110,
     padding: '1px 5px 2px',
     background: '#f3f3f3',
     borderRadius: 5,
@@ -39,6 +39,10 @@ const customStyles = {
   valueContainer: (provided) => ({
     ...provided,
     padding: '2px 0',
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    padding: '8px 2px!important',
   }),
 };
 
@@ -156,7 +160,7 @@ export default function ChatField() {
           menuPlacement={'auto'}
           isSearchable={false}
         />
-        <Input name="search" onChange={handleChange} />
+        <Input name="search" onChange={handleChange} widthInput="100%" />
       </div>
       {modalIsOpen && <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />}
       {searchElements.length ? (
