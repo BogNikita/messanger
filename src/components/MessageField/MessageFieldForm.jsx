@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useRef, useState } from 'react';
+import { useInputValue } from '../../hooks/input.hook';
 import Select from 'react-select';
 import { Picker } from 'emoji-mart';
+import { usePubNub } from 'pubnub-react';
 import Button from '../Button/Button';
+import Input from '../Input/Input';
 import classes from './MessageField.module.css';
 import 'emoji-mart/css/emoji-mart.css';
-import Input from '../Input/Input';
 
 const customStyles = {
   option: (provided) => ({
@@ -25,28 +27,19 @@ const customStyles = {
   }),
 };
 
-export default React.memo(function Active(props) {
-  const {
-    status,
-    isContinue,
-    email,
-    clickHandler,
-    setSelectMessage,
-    setInputMessage,
-    inputMessage,
-    selectMessage,
-    autoComplete,
-    pubnub,
-    channels,
-    isTyping,
-    setImgMessage,
-    imgMessage,
-    isImgInput,
-    setImgInput,
-  } = props;
+export default React.memo(function MessageFieldForm(props) {
+  const { status, isContinue, email, clickHandler, autoComplete, channels, isTyping, sendMessage } =
+    props;
+
+  const inputImgSrc = useInputValue('');
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [isImgInput, setIsImgInput] = useState(false);
+  const [inputTextValue, setInputTextValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState([]);
+
   const timeoutCache = useRef(0);
+  const pubnub = usePubNub();
 
   const useFocus = () => {
     const htmlElRef = useRef(null);
@@ -89,40 +82,48 @@ export default React.memo(function Active(props) {
         });
       }, 5000);
       if (action === 'input-change') {
-        setInputMessage(inputValue);
+        setInputTextValue(inputValue);
         return;
       } else if (action === 'add-emoji') {
-        setInputMessage(inputMessage + inputValue);
+        setInputTextValue(inputTextValue + inputValue);
         setInputFocus();
         return;
       }
       return;
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [channels, pubnub, inputMessage, isTyping],
+    [channels, inputTextValue, isTyping],
   );
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    if (inputTextValue || selectedValue.length || inputImgSrc.value()) {
+      const SelectMessageToStr =
+        selectedValue?.reduce((acc, item) => acc + ' ' + item.label, '') || '';
+      const content = `${SelectMessageToStr} ${inputTextValue}`.trim();
+      sendMessage(content, inputImgSrc.value());
+      setInputTextValue('');
+      setSelectedValue([]);
+      inputImgSrc.clear();
+      setIsImgInput(false);
+    }
+  };
 
   if (usl) {
     return (
-      <>
+      <form className={classes.MessageForm} onSubmit={onSubmitHandler}>
         {isImgInput && (
-          <Input
-            value={imgMessage}
-            onChange={(e) => setImgMessage(e.target.value)}
-            title="Введите URL картинки"
-            type="URL"
-            widthInput='75%'
-          />
+          <Input {...inputImgSrc.bind} title="Введите URL картинки" type="URL" widthInput="75%" />
         )}
         <div className={classes.FormWrapper}>
           <Select
             isMulti
             name="messange"
             options={autoComplete}
-            inputValue={inputMessage}
-            value={selectMessage}
+            inputValue={inputTextValue}
+            value={selectedValue}
             onInputChange={(value, action) => onInputChange(value, action)}
-            onChange={setSelectMessage}
+            onChange={setSelectedValue}
             styles={customStyles}
             placeholder="Введите ваше сообщение"
             noOptionsMessage={() => null}
@@ -143,7 +144,7 @@ export default React.memo(function Active(props) {
             }}>
             <i className="far fa-smile-beam"></i>
           </div>
-          <div className={classes.IconButton} onClick={() => setImgInput(!isImgInput)}>
+          <div className={classes.IconButton} onClick={() => setIsImgInput(!isImgInput)}>
             <i className="far fa-file-image"></i>
           </div>
           <div className={classes.MessageFormButton}>
@@ -152,8 +153,12 @@ export default React.memo(function Active(props) {
             </Button>
           </div>
         </div>
-      </>
+      </form>
     );
   }
-  return <div className={classes.MessageFormButtonWrapper}><Button onClick={() => clickHandler(status, email)}>{textButton.current[status]}</Button></div>;
+  return (
+    <div className={classes.MessageFormButtonWrapper}>
+      <Button onClick={() => clickHandler(status, email)}>{textButton.current[status]}</Button>
+    </div>
+  );
 });

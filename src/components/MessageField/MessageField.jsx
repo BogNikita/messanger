@@ -2,9 +2,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import { usePubNub } from 'pubnub-react';
 import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/chat';
-import Active from './Active';
+import MessageFieldForm from './MessageFieldForm';
 import MessageList from './MessageList';
 import DialogIsOver from '../DialogIsOver/DialogIsOver';
 import TypingIndicator from '../TypingIndicator/TypingIndicator';
@@ -17,18 +16,12 @@ export default React.memo(function MessageField({ status, chatId }) {
   const { email } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
-  const pubnub = usePubNub();
   const history = useHistory();
 
-  const [selectMessage, setSelectMessage] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [imgMessage, setImgMessage] = useState('');
   const [isContinue, setIsContinue] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [isImgInput, setImgInput] = useState(false);
 
   const activeChat = chatList[status]?.chats.find((chat) => chat.id === +chatId);
-
   const prevStatus = useRef(status);
 
   useEffect(() => {
@@ -61,31 +54,17 @@ export default React.memo(function MessageField({ status, chatId }) {
   );
 
   const sendMessage = useCallback(
-    (content) => {
+    (content, imgSrc) => {
       const newMessage = {
         content,
-        imgSrc: imgMessage,
+        imgSrc,
         timestamp: Date.now(),
         writtenBy: email,
       };
       dispatch(fetchAddNewMessage(+chatId, newMessage, activeChat.messages.length));
     },
-    [email, activeChat, chatId, imgMessage],
+    [email, activeChat, chatId],
   );
-
-  const onSubmitHandler = (e) => {
-    e.preventDefault();
-    if (inputMessage || selectMessage.length || imgMessage) {
-      const SelectMessageToStr =
-        selectMessage?.reduce((acc, item) => acc + ' ' + item.label, '') || '';
-      const content = `${SelectMessageToStr} ${inputMessage}`.trim();
-      sendMessage(content);
-      setInputMessage('');
-      setSelectMessage([]);
-      setImgMessage('');
-      setImgInput(false);
-    }
-  };
 
   return (
     <div className={classes.MessageField}>
@@ -107,28 +86,18 @@ export default React.memo(function MessageField({ status, chatId }) {
           )}
         </div>
       </div>
-      <form className={classes.MessageForm} onSubmit={onSubmitHandler}>
         {activeChat?.status && (
-          <Active
+          <MessageFieldForm
             status={status}
             email={email}
             clickHandler={clickHandler}
             isContinue={isContinue}
-            setSelectMessage={setSelectMessage}
-            inputMessage={inputMessage}
-            selectMessage={selectMessage}
-            setInputMessage={setInputMessage}
             autoComplete={messages}
-            pubnub={pubnub}
             channels={activeChat.id}
             isTyping={activeChat.isTyping}
-            setImgMessage={setImgMessage}
-            imgMessage={imgMessage}
-            isImgInput={isImgInput}
-            setImgInput={setImgInput}
+            sendMessage={sendMessage}
           />
         )}
-      </form>
     </div>
   );
 });
