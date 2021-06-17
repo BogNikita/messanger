@@ -46,10 +46,7 @@
   justify-content: space-between;
   align-items: center;
 }
-.DialogSettingsListItem div:first-child > div,
-.DialogSettingsListItem div:first-child {
-  width: 100%;
-}
+
 .DialogSettingsListItemIcon {
   cursor: pointer;
   margin-left: 10px;
@@ -78,4 +75,8 @@
 .DialogSettingsButtonSubmit {
   display: block;
   margin: 10px auto;
+}
+
+.DialogSettingsAutoGreeting {
+  margin: 20px 0;
 }

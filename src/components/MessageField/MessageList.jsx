@@ -1,7 +1,7 @@
 import React from 'react';
 import MessageItem from '../MessageItem/MessageItem';
 
-export default function MessageList({ messages }) {
+export default React.memo(function MessageList({ messages }) {
   return messages?.map((item, i, arr) => (
     <MessageItem
       key={`${item.timestamp}_${i}`}
@@ -12,4 +12,4 @@ export default function MessageList({ messages }) {
       imgSrc={item.imgSrc}
     />
   ));
-}
+});

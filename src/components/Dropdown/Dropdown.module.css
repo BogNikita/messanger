@@ -4,8 +4,11 @@
     border-radius: 5px;
     margin: 0;
     padding: 0;
-    width: 95%;
-    position: absolute;
+    right: 10px;
+    left: 50px;
+    max-height: 500px;
+    overflow-y: auto;
+    position: absolute; 
 }
 
 .Dropdown li {

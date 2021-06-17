@@ -14,6 +14,9 @@ export default function Router() {
           <Route exact path="/">
             <MainPage />
           </Route>
+          <Route exact path="/:status/:chatId">
+            <MainPage />
+          </Route>
           <Redirect to="/" />
         </Switch>
       </BrowserRouter>

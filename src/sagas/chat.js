@@ -4,8 +4,12 @@ import {
   FETCH_CHANGE_CHAT_STATUS,
   FETCH_CHAT_REQUEST,
 } from '../store/action/action.type';
-import { fetchChatError, fetchChatSuccess } from '../store/action/chat';
-import { addNewMessage, changeChatStatus } from '../store/action/activeChat';
+import {
+  fetchChatError,
+  fetchChatSuccess,
+  addNewMessage,
+  changeChatStatus,
+} from '../store/action/chat';
 import firebase from 'firebase/app';
 
 function* fetchChatWorker({ count, status }) {

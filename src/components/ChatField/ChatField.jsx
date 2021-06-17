@@ -1,9 +1,10 @@
 import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import throttle from 'lodash.throttle';
 import { usePubNub } from 'pubnub-react';
+import Select from 'react-select';
 import { chatTyping } from '../../store/action/chat';
-import { getChat } from '../../store/action/activeChat';
 import { logout } from '../../store/action/auth';
 import Input from '../Input/Input';
 import Dropdown from '../Dropdown/Dropdown';
@@ -11,6 +12,35 @@ import Button from '../Button/Button';
 import TypeChatList from '../TypeChat/TypeChatList';
 import ProfileEditModal from '../ProfileEditModal/ProfileEditModal';
 import classes from './ChatField.module.css';
+
+const customStyles = {
+  option: (provided) => ({
+    ...provided,
+    borderBottom: '1px dotted pink',
+    padding: 10,
+  }),
+  control: () => ({
+    minWidth: 170,
+    padding: '1px 5px 2px',
+    background: '#f3f3f3',
+    borderRadius: 5,
+    borderRight: 'none',
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+  }),
+  menu: (provided) => ({
+    ...provided,
+    background: '#f3f3f3',
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    padding: '2px 0',
+  }),
+};
 
 export default function ChatField() {
   const { chatList, isSuccess } = useSelector((state) => state.chat);
@@ -28,16 +58,31 @@ export default function ChatField() {
     { type: 'save', title: 'Сохраненные' },
   ]);
 
-  const pubnub = usePubNub();
+  const searchSelectOption = useRef([
+    {
+      label: 'Поиск по тексту',
+      value: 'content',
+    },
+    {
+      label: 'Поиск по автору',
+      value: 'writtenBy',
+    },
+  ]);
 
-  const typingSignal = useCallback((s) => {
-    if (s.message.typing === '0') {
-      dispatch(chatTyping(s.message.id, false));
-    }
-    if (s.message.typing === '1') {
-      dispatch(chatTyping(s.message.id, true));
-    }
-  }, [dispatch]);
+  const pubnub = usePubNub();
+  const history = useHistory();
+
+  const typingSignal = useCallback(
+    (s) => {
+      if (s.message.typing === '0') {
+        dispatch(chatTyping(s.message.id, false));
+      }
+      if (s.message.typing === '1') {
+        dispatch(chatTyping(s.message.id, true));
+      }
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     if (isSuccess) {
@@ -82,7 +127,7 @@ export default function ChatField() {
     for (const key in chatList) {
       const chat = chatList[key].chats.find((chat) => chat.id === id);
       if (chat) {
-        dispatch(getChat(chat));
+        history.push(`/${key}/${id}`);
       }
     }
   };
@@ -91,16 +136,26 @@ export default function ChatField() {
     dispatch(logout());
   };
 
+  const selectHandler = ({ value }) => {
+    setValueSearch(value);
+  };
+
   return (
     <div className={classes.ChatList}>
       <div className={classes.TopWrapper}>
         <div className={classes.ModalButton} onClick={() => setIsOpen(!modalIsOpen)}>
           <i className="fas fa-user-edit"></i>
         </div>
-        <select className={classes.select} onChange={(e) => setValueSearch(e.target.value)}>
-          <option value="content">text</option>
-          <option value="writtenBy">client</option>
-        </select>
+        <Select
+          name="option-search"
+          options={searchSelectOption.current}
+          defaultValue={searchSelectOption.current[0]}
+          onChange={selectHandler}
+          styles={customStyles}
+          noOptionsMessage={() => null}
+          menuPlacement={'auto'}
+          isSearchable={false}
+        />
         <Input name="search" onChange={handleChange} />
       </div>
       {modalIsOpen && <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />}

@@ -39,12 +39,11 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
   };
 
   const onSubmitHandler = ({ messages, autoGreeting }) => {
-    const prepareMessages = messages.filter((item) => {
-      if (item) {
-        item.value = item.label.toLowerCase();
-      }
-      return item;
-    });
+    const sortMessages = messages.filter((item) => !!item.label);
+    const prepareMessages = sortMessages.map(({ label }) => ({
+      label,
+      value: label.toLowerCase(),
+    }));
     dispatch(fetchUserDialogSettingsUpdate(token, prepareMessages, autoGreeting));
     if (!isError) {
       closeModal();
@@ -89,7 +88,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                       <span>У вас пока нет готовых сообщений</span>
                     )}
                     <div>
-                      <Button type="button" onClick={() => arrayHelpers.push('')}>
+                      <Button type="button" onClick={() => arrayHelpers.push()}>
                         Добавить сообщения
                       </Button>
                     </div>
@@ -101,11 +100,14 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                 render={() => (
                   <Field name="autoGreeting">
                     {({ field }) => (
-                      <Input
-                        title="Автоматическое приветствие"
-                        placeholder="Введите сообщение при входе в диалог"
-                        {...field}
-                      />
+                      <div className={classes.DialogSettingsAutoGreeting}>
+                        <Input
+                          title="Автоматическое приветствие"
+                          placeholder="Введите сообщение при входе в диалог"
+                          widthInput='100%'
+                          {...field}
+                        />
+                      </div>
                     )}
                   </Field>
                 )}
