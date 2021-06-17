@@ -5,6 +5,7 @@ import { fetchChangeAvatar, fetchUpdateProfile } from '../../store/action/auth';
 import Modal from 'react-modal';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
+import Error from '../Error/Error';
 import classes from './ProfileEditModal.module.css';
 
 const customStyles = {
@@ -35,9 +36,9 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
   };
 
   const onSubmitHandler = ({ displayName, password, photoURL }) => {
-    dispatch(fetchUpdateProfile(displayName, photoURL, password))
+    dispatch(fetchUpdateProfile(displayName, photoURL, password));
     if (!isError) {
-      closeModal()
+      closeModal();
     }
   };
 
@@ -112,7 +113,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
             <div className={classes.ModalSubmitButton}>
               <Button type="submit">Обновить данные</Button>
             </div>
-            {isError && <span className={classes.ErrorMessage}>{errorMessage}</span>}
+            {isError && <Error message={errorMessage} />}
           </form>
         )}
       />

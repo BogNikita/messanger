@@ -2,20 +2,19 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePubNub } from 'pubnub-react';
 import { fetchAddNewMessage, fetchChangeChatStatus, getChat } from '../../store/action/activeChat';
-import { fetchAutoCompleteRequest } from '../../store/action/autoComplete';
+import { fetchUserDialogSettingsRequest } from '../../store/action/userDialogSettings';
 import Active from './Active';
 import MessageList from './MessageList';
 import DialogIsOver from '../DialogIsOver/DialogIsOver';
 import TypingIndicator from '../TypingIndicator/TypingIndicator';
-import classes from './MessageField.module.css';
-import Button from '../Button/Button';
 import DialogSettings from '../DialogSettings/DialogSettings';
+import classes from './MessageField.module.css';
 
 export default React.memo(function MessageField() {
   const activeChat = useSelector((state) => state.activeChat);
   const { chatList } = useSelector((state) => state.chat);
-  const autoComplete = useSelector((state) => state.autoComplete.messages);
-  const { email } = useSelector((state) => state.auth);
+  const autoComplete = useSelector((state) => state.userDialogSettings.messages);
+  const { email, token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const pubnub = usePubNub();
 
@@ -26,14 +25,15 @@ export default React.memo(function MessageField() {
 
   useEffect(() => {
     setIsContinue(false);
-    dispatch(fetchAutoCompleteRequest());
-  }, [activeChat.id, dispatch]);
+    dispatch(fetchUserDialogSettingsRequest(token));
+  }, [activeChat.id, dispatch, token]);
 
   useEffect(() => {
     if (activeChat.status) {
       const find = chatList[activeChat.status].chats.find((item) => item.id === activeChat.id);
       dispatch(getChat(find));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatList, dispatch]);
 
   const clickHandler = useCallback(

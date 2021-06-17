@@ -40,9 +40,3 @@
     margin-left: auto;
 }
 
-.ErrorMessage {
-    display: block;
-    color: rgb(190, 91, 91);
-    margin: 5px 0;
-    text-align: center;
-}
