@@ -1,28 +1,40 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChangeChatStatus } from '../../store/action/activeChat';
-import moment from 'moment';
-import Input from '../Input/Input';
-import Button from '../Button/Button';
+import { useHistory } from 'react-router';
+import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/chat';
+import MessageFieldForm from './MessageFieldForm';
+import MessageList from './MessageList';
+import DialogIsOver from '../DialogIsOver/DialogIsOver';
+import TypingIndicator from '../TypingIndicator/TypingIndicator';
+import DialogSettings from '../DialogSettings/DialogSettings';
 import classes from './MessageField.module.css';
 
-export default React.memo(function MessageField() {
-  const activeChat = useSelector((state) => state.activeChat);
+export default React.memo(function MessageField({ status, chatId }) {
+  const { chatList } = useSelector((state) => state.chat);
+  const { messages, autoGreeting } = useSelector((state) => state.userDialogSettings);
   const { email } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
 
-  const [chat, setChat] = useState();
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const [isContinue, setIsContinue] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  const activeChat = chatList[status]?.chats.find((chat) => chat.id === +chatId);
+  const prevStatus = useRef(status);
 
   useEffect(() => {
-    setChat(activeChat);
-  }, [activeChat]);
+    setIsContinue(false);
+    if (prevStatus.current === 'waiting') {
+      setIsContinue(true);
+    }
+  }, [chatId]);
 
-  const textButton = useRef({
-    active: 'Продолжить чат',
-    waiting: 'Войти в чат',
-    save: 'Удалить чат',
-    offline: 'Сохранить чат',
+  const newStatus = useRef({
+    offline: 'save',
+    save: 'offline',
+    waiting: 'active',
   });
 
   const clickHandler = useCallback(
@@ -30,55 +42,62 @@ export default React.memo(function MessageField() {
       if (status === 'active' || status === 'waiting') {
         setIsContinue(true);
       }
-      const { id } = chat;
       if (status !== 'active') {
-        dispatch(fetchChangeChatStatus(id, status, email));
+        dispatch(fetchChangeChatStatus(+chatId, status, newStatus.current[status], email));
+        history.push(`/${newStatus.current[status]}/${chatId}`);
+        if (status === 'waiting' && autoGreeting) {
+          sendMessage(autoGreeting);
+        }
       }
     },
-    [chat, dispatch],
+    [chatId, autoGreeting],
   );
 
-  const ActionButton = useCallback(() => {
-    if (chat.status === 'active' && isContinue) {
-      return (
-        <>
-          <Input />
-          <Button>Отправить сообщение</Button>
-        </>
-      );
-    } else {
-      return (
-        <Button onClick={() => clickHandler(chat.status, email)}>
-          {textButton.current[chat.status]}
-        </Button>
-      );
-    }
-  }, [chat?.status, clickHandler, email, isContinue]);
-
-  const rate = () => Array(5).fill('').map((_, i) => {
-    if (i < chat.rate) {
-      return <i key={`star_${i}`} className="fas fa-star"></i>
-    } else return <i key={`star_${i}`} className="far fa-star"></i>
-  })
+  const sendMessage = useCallback(
+    (content, imgSrc) => {
+      const newMessage = {
+        content,
+        imgSrc,
+        timestamp: Date.now(),
+        writtenBy: email,
+      };
+      dispatch(fetchAddNewMessage(+chatId, newMessage, activeChat.messages.length));
+    },
+    [email, activeChat, chatId],
+  );
 
   return (
     <div className={classes.MessageField}>
-      <div className={classes.wrapper}>
-        <h2>{chat?.messages[0]?.writtenBy}</h2>
+      <div className={classes.HeaderWrapper}>
         <div>
-          {chat?.messages?.map((item, i, arr) => (
-            <div
-              key={`${item.timestamp}_${i}`}
-              className={classes.Message}
-              style={{ textAlign: `${item.writtenBy !== arr[0].writtenBy ? 'right' : 'left'}` }}>
-              <span>{item.content}</span>
-              <time>{moment(item.timestamp).format('LT')}</time>
-            </div>
-          ))}
+          <h2>{activeChat?.messages[0]?.writtenBy || 'Добро пожаловать'}</h2>
+          {activeChat?.isTyping && <TypingIndicator />}
         </div>
-        {chat?.rate && <span className={classes.Rate}>Оценка чата {rate()}</span>}
-        <form onSubmit={(e) => e.preventDefault()}>{chat?.status && ActionButton()}</form>
+        <DialogSettings modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
       </div>
+      <div className={classes.Wrapper}>
+        <div className={classes.WrapperMessageList}>
+          {activeChat && <MessageList messages={activeChat?.messages} />}
+          {activeChat?.rate && (
+            <DialogIsOver
+              chatRate={activeChat.rate}
+              timestamp={activeChat.messages[activeChat.messages.length - 1].timestamp}
+            />
+          )}
+        </div>
+      </div>
+        {activeChat?.status && (
+          <MessageFieldForm
+            status={status}
+            email={email}
+            clickHandler={clickHandler}
+            isContinue={isContinue}
+            autoComplete={messages}
+            channels={activeChat.id}
+            isTyping={activeChat.isTyping}
+            sendMessage={sendMessage}
+          />
+        )}
     </div>
   );
 });

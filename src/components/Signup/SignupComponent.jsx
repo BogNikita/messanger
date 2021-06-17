@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import Button from '../Button/Button';
+import Error from '../Error/Error';
 import Input from '../Input/Input';
-import classes from './Signup.module.css'
+import classes from './Signup.module.css';
 
 export default function SignupComponent(props) {
   const {
@@ -23,12 +24,8 @@ export default function SignupComponent(props) {
     [errors, touched],
   );
 
-  const Error = useCallback(() => {
-    return <span>{errorMessage}</span>
-  }, [errorMessage])
-
   return (
-    <form className={classes['form-signup']} onSubmit={handleSubmit}>
+    <form className={classes.FormSignup} onSubmit={handleSubmit}>
       <Input
         type="email"
         name={fieldLogin}
@@ -50,10 +47,10 @@ export default function SignupComponent(props) {
         placeholder="123456"
         errors={isFieldError(fieldPassword)}
       />
-      
+
       <Button type="submit">Войти</Button>
       {isPending && 'Loading...'}
-      {isError && <Error/>}
+      {isError && <Error message={errorMessage} />}
     </form>
   );
 }

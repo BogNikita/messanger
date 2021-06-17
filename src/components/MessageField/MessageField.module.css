@@ -1,17 +1,88 @@
 .MessageField {
   grid-area: MessageField;
-  background-color: #e9e9e9;
+  background-color: #fff;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
-.Message span {
-  display: block;
+.HeaderWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-shadow: 0px -3px 5px -5px rgba(34, 60, 80, 0.6) inset;
+  padding: 5px;
+  margin-bottom: 10px;
+  justify-content: space-between;
 }
 
-.Message .operator {
-  text-align: right;
+.HeaderWrapper h2 {
+  margin: 0;
+  margin-right: 5px;
 }
 
-.Rate i {
-  color: gold;
+.Wrapper {
+  display: flex;
+  flex: 1 0 auto;
+  position: relative;
 }
+
+.WrapperMessageList {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.MessageForm {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  padding: 10px 0;
+  box-shadow: 0px 3px 5px -5px rgba(34, 60, 80, 0.6) inset;
+}
+
+.MessageFormButtonWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.IconButton {
+  font-size: 20px;
+  padding: 0 5px;
+  align-self: center;
+  background-color: hsl(0, 0%, 100%);
+  border-color: hsl(0, 0%, 80%);
+  color: hsl(0, 0%, 80%);
+  border-radius: 0 4px;
+  border-style: solid;
+  border-width: 1px;
+  flex-shrink: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  border-left: none;
+  box-sizing: border-box;
+  transition: color 150ms;
+}
+
+.IconButton:hover {
+  color: hsl(0, 0%, 60%);
+  transition: color 150ms;
+}
+
+.MessageFormButton {
+  align-self: flex-end;
+}
+
+.FormWrapper {
+  display: flex;
+}
+
+

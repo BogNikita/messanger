@@ -10,12 +10,14 @@ export default React.memo(function Input({
   placeholder,
   onBlur,
   errors,
+  defaultValue,
+  widthInput
 }) {
   return (
     <>
       <div className={classes['input-wrapper']}>
         {title && <label htmlFor={name}>{title}:</label>}
-        <div>
+        <div style={{width: `${widthInput ? widthInput : ''}`}}>
           <input
             className={classes['primary-input']}
             name={name}
@@ -25,6 +27,7 @@ export default React.memo(function Input({
             onBlur={onBlur}
             value={value}
             autoComplete="off"
+            defaultValue={defaultValue}
           />
           {errors && <span className={classes['input-error']}>{errors}</span>}
         </div>
