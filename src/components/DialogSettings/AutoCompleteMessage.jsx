@@ -7,11 +7,9 @@ export default React.memo(function AutoCompleteMessage({ removeItem, index, ...p
   const [field] = useField(props);
   return (
     <li className={classes.DialogSettingsListItem}>
-      <Input {...field} {...props} title="Фраза" widthInput="100%" />
-      <div>
-        <span className={classes.DialogSettingsListItemIcon} onClick={() => removeItem(index)}>
-          <i className="far fa-trash-alt"></i>
-        </span>
+      <Input {...field} {...props} title="Фраза" />
+      <div className={classes.DialogSettingsListItemIcon} onClick={() => removeItem(index)}>
+        <i className="far fa-trash-alt"></i>
       </div>
     </li>
   );

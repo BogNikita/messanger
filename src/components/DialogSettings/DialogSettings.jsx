@@ -39,12 +39,11 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
   };
 
   const onSubmitHandler = ({ messages, autoGreeting }) => {
-    const prepareMessages = messages.filter((item) => {
-      if (item) {
-        item.value = item.label.toLowerCase();
-      }
-      return item;
-    });
+    const sortMessages = messages.filter((item) => !!item.label);
+    const prepareMessages = sortMessages.map(({ label }) => ({
+      label,
+      value: label.toLowerCase(),
+    }));
     dispatch(fetchUserDialogSettingsUpdate(token, prepareMessages, autoGreeting));
     if (!isError) {
       closeModal();
@@ -60,7 +59,8 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="DialogSettings"
+        id='DialogSettings'
         closeTimeoutMS={300}>
         <div className={classes.ModalHeaderWrapper}>
           <h2>Настройка диалогов</h2>
@@ -70,7 +70,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
         </div>
         <Formik initialValues={{ messages, autoGreeting }} onSubmit={onSubmitHandler}>
           {({ values }) => (
-            <Form className="test">
+            <Form>
               <FieldArray
                 name="messages"
                 render={(arrayHelpers) => (
@@ -83,6 +83,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                           name={`messages.${index}.label`}
                           index={index}
                           removeItem={arrayHelpers.remove}
+                          widthInput="100%"
                         />
                       ))
                     ) : (
@@ -105,7 +106,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                         <Input
                           title="Автоматическое приветствие"
                           placeholder="Введите сообщение при входе в диалог"
-                          widthInput='100%'
+                          widthInput="100%"
                           {...field}
                         />
                       </div>

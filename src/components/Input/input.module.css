@@ -3,34 +3,44 @@
   border-radius: 5px;
   border: none;
   padding: 12px;
-  width: 100%;
   box-sizing: border-box;
 }
 
-.input-wrapper {
-  margin: 5px 0;
-  display: flex;
-  justify-content: space-between;
+.WidthInput {
   width: 100%;
 }
 
-.input-wrapper div {
-  min-width: 280px;
+.input-body {
+  margin: 5px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .input-wrapper label {
-    padding-top: 6px;
-    margin-right: 10px;
+  padding-top: 6px;
+  margin-right: 10px;
 }
 
 .input-error {
-    display: block;
-    color: rgb(190, 91, 91);
-    margin: 5px 0;
+  display: block;
+  color: rgb(190, 91, 91);
+  margin: 5px 0;
 }
 
-@media screen and (max-width: 1024px) {
-  .input-wrapper div {
-    min-width: 100%;
+@media (max-width: 525px) {
+  .input-wrapper {
+    flex-direction: column;
+  }
+
+  .primary-input {
+    min-width: none;
   }
 }

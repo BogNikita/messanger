@@ -5,6 +5,7 @@ import throttle from 'lodash.throttle';
 import { usePubNub } from 'pubnub-react';
 import Select from 'react-select';
 import { chatTyping } from '../../store/action/chat';
+import { closeChatList } from '../../store/action/styles';
 import { logout } from '../../store/action/auth';
 import Input from '../Input/Input';
 import Dropdown from '../Dropdown/Dropdown';
@@ -48,6 +49,7 @@ const customStyles = {
 
 export default function ChatField() {
   const { chatList, isSuccess } = useSelector((state) => state.chat);
+  const { isOpenChatList } = useSelector((state) => state.styles);
   const dispatch = useDispatch();
 
   const [searchElements, setSearch] = useState([]);
@@ -132,6 +134,7 @@ export default function ChatField() {
       const chat = chatList[key].chats.find((chat) => chat.id === id);
       if (chat) {
         history.push(`/${key}/${id}`);
+        dispatch(closeChatList());
       }
     }
   };
@@ -144,10 +147,18 @@ export default function ChatField() {
     setValueSearch(value);
   };
 
+  const cls = () => {
+    if (isOpenChatList) {
+      return [[classes.ChatList, classes.ChatListOpen].join(' ')];
+    } else {
+      return classes.ChatList;
+    }
+  };
+
   return (
-    <div className={classes.ChatList}>
+    <div className={cls()}>
       <div className={classes.TopWrapper}>
-        <div className={classes.ModalButton} onClick={() => setIsOpen(!modalIsOpen)}>
+        <div className={classes.ChatFieldIconButton} onClick={() => setIsOpen(!modalIsOpen)}>
           <i className="fas fa-user-edit"></i>
         </div>
         <Select
@@ -159,8 +170,12 @@ export default function ChatField() {
           noOptionsMessage={() => null}
           menuPlacement={'auto'}
           isSearchable={false}
+          classNamePrefix="ChatList-Search"
         />
         <Input name="search" onChange={handleChange} widthInput="100%" />
+        <div className={classes.ChatFieldIconButton} onClick={() => dispatch(closeChatList())}>
+          <i className="fas fa-arrow-right"></i>
+        </div>
       </div>
       {modalIsOpen && <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />}
       {searchElements.length ? (

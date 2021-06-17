@@ -15,7 +15,7 @@
   border-bottom-left-radius: 0;
 }
 
-.ModalButton {
+.ChatFieldIconButton {
   margin-right: 10px;
   font-size: x-large;
   color: #fff;
@@ -24,9 +24,13 @@
   transition: opacity ease-in 0.2s;
 }
 
-.ModalButton:hover {
+.ChatFieldIconButton:hover {
   opacity: 0.5;
   transition: opacity ease-in 0.2s;
+}
+
+.ChatFieldIconButton:last-child {
+  display: none;
 }
 
 .ModalForm {
@@ -43,5 +47,31 @@
   border-bottom-right-radius: 0;
   position: relative;
 }
-  
 
+@media screen and (max-width: 1024px) {
+  .ChatList {
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    transition: all 0.2s;
+    left: -100%;
+    right: 100%;
+  }
+
+  .ChatListOpen {
+    left: 0;
+    right: 50%;
+  }
+  .ChatFieldIconButton:last-child {
+    display: block;
+    margin-left: 5px;
+  }
+}
+
+@media (max-width: 576px) {
+  .ChatListOpen {
+    right: 0;
+  }
+}

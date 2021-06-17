@@ -35,6 +35,7 @@ export default function SignupComponent(props) {
         value={values[fieldLogin]}
         placeholder="email@email.com"
         errors={isFieldError(fieldLogin)}
+        minWidth='280'
       />
 
       <Input
@@ -46,6 +47,7 @@ export default function SignupComponent(props) {
         value={values[fieldPassword]}
         placeholder="123456"
         errors={isFieldError(fieldPassword)}
+        minWidth='280'
       />
 
       <Button type="submit">Войти</Button>
