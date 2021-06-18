@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { fetchRequest } from '../store/action/auth';
-import SignupComponent from '../components/Signup/SignupComponent';
+import Signup from '../components/Signup';
 import classes from './Page.module.css';
 
 export default function SignupPage() {
@@ -39,7 +39,7 @@ export default function SignupPage() {
       <h1>
         Авторизация <i className="fab fa-accessible-icon"></i>
       </h1>
-      <SignupComponent {...formik} {...state} fieldLogin="email" fieldPassword="password" />
+      <Signup {...formik} {...state} fieldLogin="email" fieldPassword="password" />
     </div>
   );
 }

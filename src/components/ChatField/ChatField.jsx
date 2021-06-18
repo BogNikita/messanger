@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -7,11 +8,11 @@ import Select from 'react-select';
 import { chatTyping } from '../../store/action/chat';
 import { closeChatList } from '../../store/action/styles';
 import { logout } from '../../store/action/auth';
-import Input from '../Input/Input';
-import Dropdown from '../Dropdown/Dropdown';
-import Button from '../Button/Button';
-import TypeChatList from '../TypeChat/TypeChatList';
-import ProfileEditModal from '../ProfileEditModal/ProfileEditModal';
+import Input from '../Input';
+import Dropdown from '../Dropdown';
+import Button from '../Button';
+import TypeChatList from '../TypeChat';
+import ProfileEditModal from '../ProfileEditModal';
 import classes from './ChatField.module.css';
 
 const customStyles = {
@@ -139,9 +140,9 @@ export default function ChatField() {
     }
   };
 
-  const clickHandlerLogout = () => {
+  const clickHandlerLogout = useCallback(() => {
     dispatch(logout());
-  };
+  }, [])
 
   const selectHandler = ({ value }) => {
     setValueSearch(value);

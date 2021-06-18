@@ -5,7 +5,7 @@ import { useHistory } from 'react-router';
 import { fetchChatRequest } from '../../store/action/chat';
 import { closeChatList } from '../../store/action/styles';
 import InfiniteScroll from 'react-infinite-scroller';
-import ChatList from './ChatList';
+import { ChatList } from './';
 import classes from './TypeChat.module.css';
 
 export default React.memo(function ListItem({ title, type }) {
@@ -34,7 +34,7 @@ export default React.memo(function ListItem({ title, type }) {
   const clickHandler = useCallback(
     (chat) => {
       history.push(`/${type}/${chat.id}`);
-      dispatch(closeChatList())
+      dispatch(closeChatList());
     },
     [type],
   );

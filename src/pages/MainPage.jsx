@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
 import { fetchUserDialogSettingsRequest } from '../store/action/userDialogSettings';
 import ChatField from '../components/ChatField/ChatField';
-import MessageField from '../components/MessageField/MessageField';
+import MessageField from '../components/MessageField/';
 import classes from './Page.module.css';
 
 export default function MainPage() {

@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/chat';
 import { openChatList } from '../../store/action/styles';
-import MessageFieldForm from './MessageFieldForm';
-import MessageList from './MessageList';
-import DialogIsOver from '../DialogIsOver/DialogIsOver';
+import { MessageFieldForm } from './';
+import { MessageList } from './';
+import DialogIsOver from '../DialogIsOver';
 import TypingIndicator from '../TypingIndicator/TypingIndicator';
-import DialogSettings from '../DialogSettings/DialogSettings';
+import DialogSettings from '../DialogSettings';
 import classes from './MessageField.module.css';
 
-export default React.memo(function MessageField({ status, chatId }) {
+export default function MessageField({ status, chatId }) {
   const { chatList } = useSelector((state) => state.chat);
   const { messages, autoGreeting } = useSelector((state) => state.userDialogSettings);
   const { email } = useSelector((state) => state.auth);
@@ -55,7 +55,7 @@ export default React.memo(function MessageField({ status, chatId }) {
   );
 
   const sendMessage = useCallback(
-    (content, imgSrc) => {
+    (content, imgSrc = '') => {
       const newMessage = {
         content,
         imgSrc,
@@ -104,4 +104,4 @@ export default React.memo(function MessageField({ status, chatId }) {
       )}
     </div>
   );
-});
+}

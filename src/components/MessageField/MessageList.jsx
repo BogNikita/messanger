@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import MessageItem from '../MessageItem/MessageItem';
+import MessageItem from '../MessageItem';
 
 export default React.memo(function MessageList({ messages }) {
   const messagesEndRef = useRef(null);

@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatListItem from './ChatListItem';
+import { ChatListItem } from './';
 
 export default function ChatList({ chats, title, clickHandler }) {
   if (chats?.length) {
