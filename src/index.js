@@ -8,11 +8,14 @@ import 'firebase/database';
 import { firebaseConfig } from './config/firebase.config';
 import moment from 'moment';
 import 'moment/locale/ru';
+import * as Sentry from '@sentry/react';
+import { sentryConfig } from './config/sentry.config';
 import './index.css';
 
 moment.locale('ru');
 
 firebase.initializeApp(firebaseConfig);
+Sentry.init(sentryConfig);
 
 ReactDOM.render(
   <React.StrictMode>
