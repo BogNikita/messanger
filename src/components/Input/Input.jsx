@@ -11,15 +11,17 @@ export default React.memo(function Input({
   onBlur,
   errors,
   defaultValue,
-  widthInput
+  widthInput,
+  minWidth
 }) {
   return (
     <>
-      <div className={classes['input-wrapper']}>
-        {title && <label htmlFor={name}>{title}:</label>}
-        <div style={{width: `${widthInput ? widthInput : ''}`}}>
+      <div className={classes['input-body']}>
+        <div className={classes['input-wrapper']}>
+          {title && <label htmlFor={name}>{title}:</label>}
           <input
-            className={classes['primary-input']}
+            className={[classes['primary-input'], widthInput ? classes.WidthInput : ''].join(' ')}
+            style={{minWidth: minWidth ? minWidth + 'px' : 0}}
             name={name}
             type={type}
             placeholder={placeholder}
@@ -29,8 +31,8 @@ export default React.memo(function Input({
             autoComplete="off"
             defaultValue={defaultValue}
           />
-          {errors && <span className={classes['input-error']}>{errors}</span>}
         </div>
+        {errors && <span className={classes['input-error']}>{errors}</span>}
       </div>
     </>
   );

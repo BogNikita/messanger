@@ -147,9 +147,9 @@ export default React.memo(function MessageFieldForm(props) {
           <div className={classes.IconButton} onClick={() => setIsImgInput(!isImgInput)}>
             <i className="far fa-file-image"></i>
           </div>
-          <div className={classes.MessageFormButton}>
+          <div className={[classes.MessageFormButton, classes.IconButton].join(' ')}>
             <Button type="submit" onClick={() => setMenuIsOpen(false)}>
-              Отправить
+              <i className="far fa-paper-plane"></i>
             </Button>
           </div>
         </div>

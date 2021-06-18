@@ -17,6 +17,9 @@ const customStyles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
   },
+  overlay: {
+    zIndex: '20',
+  },
 };
 Modal.setAppElement('#root');
 
@@ -76,7 +79,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
               validate={required}
               defaultValue={displayName ? displayName : ''}>
               {({ input, meta }) => (
-                <Input {...input} type="text" title="Имя" errors={meta.error} />
+                <Input {...input} type="text" title="Имя" errors={meta.error} minWidth='280'/>
               )}
             </Field>
             <Field name="photo">
@@ -89,7 +92,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
                     </div>
                   ) : (
                     <>
-                      <Input {...input} type="url" title="Аватар" />
+                      <Input {...input} type="url" title="Аватар" minWidth='280'/>
                       <Button
                         style={classes.AvatarSaveButton}
                         onClick={() => onChangeAvatar(input.value)}>
@@ -102,12 +105,12 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
             </Field>
             <Field name="password" validate={minLength}>
               {({ input, meta }) => (
-                <Input {...input} type="password" title="Пароль" errors={meta.error} />
+                <Input {...input} type="password" title="Пароль" errors={meta.error} minWidth='280'/>
               )}
             </Field>
             <Field name="repeat_password" validate={isEqual(values.password)}>
               {({ input, meta }) => (
-                <Input {...input} type="password" title="Повторите пароль" errors={meta.error} />
+                <Input {...input} type="password" title="Повторите пароль" errors={meta.error} minWidth='280'/>
               )}
             </Field>
             <div className={classes.ModalSubmitButton}>

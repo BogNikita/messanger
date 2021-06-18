@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/chat';
+import { openChatList } from '../../store/action/styles';
 import MessageFieldForm from './MessageFieldForm';
 import MessageList from './MessageList';
 import DialogIsOver from '../DialogIsOver/DialogIsOver';
@@ -69,7 +70,10 @@ export default React.memo(function MessageField({ status, chatId }) {
   return (
     <div className={classes.MessageField}>
       <div className={classes.HeaderWrapper}>
-        <div>
+        <div className={classes.MessageFieldHeader}>
+          <div className={classes.MessageFieldHeaderIcon} onClick={() => dispatch(openChatList())}>
+            <i className="fas fa-arrow-left"></i>
+          </div>
           <h2>{activeChat?.messages[0]?.writtenBy || 'Добро пожаловать'}</h2>
           {activeChat?.isTyping && <TypingIndicator />}
         </div>
@@ -86,18 +90,18 @@ export default React.memo(function MessageField({ status, chatId }) {
           )}
         </div>
       </div>
-        {activeChat?.status && (
-          <MessageFieldForm
-            status={status}
-            email={email}
-            clickHandler={clickHandler}
-            isContinue={isContinue}
-            autoComplete={messages}
-            channels={activeChat.id}
-            isTyping={activeChat.isTyping}
-            sendMessage={sendMessage}
-          />
-        )}
+      {activeChat?.status && (
+        <MessageFieldForm
+          status={status}
+          email={email}
+          clickHandler={clickHandler}
+          isContinue={isContinue}
+          autoComplete={messages}
+          channels={activeChat.id}
+          isTyping={activeChat.isTyping}
+          sendMessage={sendMessage}
+        />
+      )}
     </div>
   );
 });

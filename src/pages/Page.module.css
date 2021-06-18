@@ -6,6 +6,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding: 0 10px;
 }
 
 .MainLayout {
@@ -17,6 +18,11 @@
   height: 100vh;
 }
 
-.Profile {
-  grid-area: Profile;
+@media screen and (max-width: 1024px) {
+  .MainLayout {
+    display: flex;
+    position: relative;
+  }
 }
+
+
