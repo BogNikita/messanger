@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import { fetchChangeAvatar, fetchUpdateProfile } from '../../store/action/auth';
 import Modal from 'react-modal';
-import Button from '../Button/Button';
-import Input from '../Input/Input';
-import Error from '../Error/Error';
+import Button from '../Button';
+import Input from '../Input';
+import Error from '../Error';
 import classes from './ProfileEditModal.module.css';
 
 const customStyles = {

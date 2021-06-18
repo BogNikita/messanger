@@ -13,6 +13,7 @@
     "lodash.throttle": "^4.1.1",
     "moment": "^2.29.1",
     "multiselect-react-dropdown": "^1.6.13",
+    "prop-types": "^15.7.2",
     "pubnub": "^4.32.1",
     "pubnub-react": "^2.1.0",
     "react": "^17.0.2",

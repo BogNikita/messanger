@@ -4,8 +4,8 @@ import { useInputValue } from '../../hooks/input.hook';
 import Select from 'react-select';
 import { Picker } from 'emoji-mart';
 import { usePubNub } from 'pubnub-react';
-import Button from '../Button/Button';
-import Input from '../Input/Input';
+import Button from '../Button';
+import Input from '../Input';
 import classes from './MessageField.module.css';
 import 'emoji-mart/css/emoji-mart.css';
 
@@ -108,6 +108,7 @@ export default React.memo(function MessageFieldForm(props) {
       setIsImgInput(false);
     }
   };
+
 
   if (usl) {
     return (

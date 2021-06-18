@@ -3,10 +3,10 @@ import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import { fetchUserDialogSettingsUpdate } from '../../store/action/userDialogSettings';
-import Error from '../Error/Error';
-import Button from '../Button/Button';
-import Input from '../Input/Input';
-import AutoCompleteMessage from './AutoCompleteMessage';
+import Error from '../Error';
+import Button from '../Button';
+import Input from '../Input';
+import { AutoCompleteMessage } from './';
 import classes from './DialogSettings.module.css';
 
 const customStyles = {
@@ -60,7 +60,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="DialogSettings"
-        id='DialogSettings'
+        id="DialogSettings"
         closeTimeoutMS={300}>
         <div className={classes.ModalHeaderWrapper}>
           <h2>Настройка диалогов</h2>
@@ -90,7 +90,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                       <span>У вас пока нет готовых сообщений</span>
                     )}
                     <div>
-                      <Button type="button" onClick={() => arrayHelpers.push()}>
+                      <Button type="button" onClick={arrayHelpers.push}>
                         Добавить сообщения
                       </Button>
                     </div>
