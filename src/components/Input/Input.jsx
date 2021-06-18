@@ -14,20 +14,16 @@ export default React.memo(function Input({
   widthInput,
   minWidth,
 }) {
-  const cls = () => {
-    if (widthInput) {
-      return [classes['primary-input'], classes.WidthInput].join(' ');
-    } else {
-      return classes['primary-input'];
-    }
-  };
+  const cls = widthInput
+    ? [classes['primary-input'], classes.WidthInput].join(' ')
+    : classes['primary-input'];
   return (
     <>
       <div className={classes['input-body']}>
         <div className={classes['input-wrapper']}>
           {title && <label htmlFor={name}>{title}:</label>}
           <input
-            className={cls()}
+            className={cls}
             style={{ minWidth: minWidth ? minWidth + 'px' : 0 }}
             name={name}
             type={type}

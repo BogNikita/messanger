@@ -147,17 +147,11 @@ export default function ChatField() {
   const selectHandler = ({ value }) => {
     setValueSearch(value);
   };
-
-  const cls = () => {
-    if (isOpenChatList) {
-      return [[classes.ChatList, classes.ChatListOpen].join(' ')];
-    } else {
-      return classes.ChatList;
-    }
-  };
+  
+  const cls = isOpenChatList ? [[classes.ChatList, classes.ChatListOpen].join(' ')] : classes.ChatList
 
   return (
-    <div className={cls()}>
+    <div className={cls}>
       <div className={classes.TopWrapper}>
         <div className={classes.ChatFieldIconButton} onClick={() => setIsOpen(!modalIsOpen)}>
           <i className="fas fa-user-edit"></i>
