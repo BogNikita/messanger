@@ -18,7 +18,7 @@ function* fetchChatWorker({ count, status }) {
       .database()
       .ref('chatList')
       .orderByChild('status')
-      .limitToFirst(count)
+      .limitToLast(count)
       .equalTo(status)
       .once('value');
     const data = res.val();

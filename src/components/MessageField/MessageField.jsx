@@ -40,6 +40,9 @@ export default function MessageField({ status, chatId }) {
 
   const clickHandler = useCallback(
     (status, email) => {
+      if (status === 'waiting') {
+        sendNotification();
+      }
       if (status === 'active' || status === 'waiting') {
         setIsContinue(true);
       }
@@ -53,6 +56,26 @@ export default function MessageField({ status, chatId }) {
     },
     [chatId, autoGreeting],
   );
+
+  const sendNotification = useCallback(() => {
+    const headers = {
+      'Content-Type': 'application/json; charset=utf-8',
+      Authorization: 'Basic NjAzODIxMTYtNDYzOS00Yzc4LTkwMTktOThlOGZjZGIyZTU1',
+    };
+
+    const endpoint = 'https://onesignal.com/api/v1/notifications';
+
+    const params = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        app_id: '966e76c3-8930-433d-85e4-d62f11e0bde9',
+        include_external_user_ids: [chatId],
+        contents: { en: 'Оператор вошел в чат' },
+      }),
+    };
+    fetch(endpoint, params).then((res) => console.log(res.status));
+  }, [chatId]);
 
   const sendMessage = useCallback(
     (content, imgSrc = '') => {
