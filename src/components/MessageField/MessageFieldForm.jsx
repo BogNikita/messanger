@@ -28,8 +28,17 @@ const customStyles = {
 };
 
 export default React.memo(function MessageFieldForm(props) {
-  const { status, isContinue, email, clickHandler, autoComplete, channels, isTyping, sendMessage } =
-    props;
+  const {
+    status,
+    isContinue,
+    email,
+    clickHandler,
+    autoComplete,
+    channels,
+    isTyping,
+    sendMessage,
+    name,
+  } = props;
 
   const inputImgSrc = useInputValue('');
 
@@ -69,6 +78,7 @@ export default React.memo(function MessageFieldForm(props) {
           message: {
             typing: inputValue ? '1' : '0',
             id: channels,
+            author: 'operator',
           },
         });
       }
@@ -78,6 +88,7 @@ export default React.memo(function MessageFieldForm(props) {
           message: {
             typing: '0',
             id: channels,
+            author: 'operator',
           },
         });
       }, 5000);
@@ -108,7 +119,6 @@ export default React.memo(function MessageFieldForm(props) {
       setIsImgInput(false);
     }
   };
-
 
   if (usl) {
     return (
@@ -159,7 +169,7 @@ export default React.memo(function MessageFieldForm(props) {
   }
   return (
     <div className={classes.MessageFormButtonWrapper}>
-      <Button onClick={() => clickHandler(status, email)}>{textButton.current[status]}</Button>
+      <Button onClick={clickHandler}>{textButton.current[status]}</Button>
     </div>
   );
 });

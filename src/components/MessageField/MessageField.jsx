@@ -14,8 +14,10 @@ import classes from './MessageField.module.css';
 export default function MessageField({ status, chatId }) {
   const { chatList } = useSelector((state) => state.chat);
   const { messages, autoGreeting } = useSelector((state) => state.userDialogSettings);
-  const { email } = useSelector((state) => state.auth);
-
+  const {
+    email,
+    user: { displayName },
+  } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -38,24 +40,23 @@ export default function MessageField({ status, chatId }) {
     waiting: 'active',
   });
 
-  const clickHandler = useCallback(
-    (status, email) => {
-      if (status === 'waiting') {
-        sendNotification();
+  const clickHandler = useCallback(() => {
+    if (status === 'waiting') {
+      sendNotification();
+    }
+    if (status === 'active' || status === 'waiting') {
+      setIsContinue(true);
+    }
+    if (status !== 'active') {
+      dispatch(
+        fetchChangeChatStatus(+chatId, status, newStatus.current[status], email, displayName),
+      );
+      history.push(`/${chatId}/${newStatus.current[status]}`);
+      if (status === 'waiting' && autoGreeting) {
+        sendMessage(autoGreeting);
       }
-      if (status === 'active' || status === 'waiting') {
-        setIsContinue(true);
-      }
-      if (status !== 'active') {
-        dispatch(fetchChangeChatStatus(+chatId, status, newStatus.current[status], email));
-        history.push(`/${newStatus.current[status]}/${chatId}`);
-        if (status === 'waiting' && autoGreeting) {
-          sendMessage(autoGreeting);
-        }
-      }
-    },
-    [chatId, autoGreeting],
-  );
+    }
+  }, [chatId, autoGreeting, status]);
 
   const sendNotification = useCallback(() => {
     const headers = {
@@ -123,6 +124,7 @@ export default function MessageField({ status, chatId }) {
           channels={activeChat.id}
           isTyping={activeChat.isTyping}
           sendMessage={sendMessage}
+          name={displayName}
         />
       )}
     </div>

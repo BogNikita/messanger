@@ -31,7 +31,7 @@ function* fetchChatWorker({ count, status }) {
   }
 }
 
-function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus }) {
+function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus, name }) {
   try {
     yield firebase
       .database()
@@ -43,6 +43,9 @@ function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus }) {
           key.ref.child('status').set(newStatus);
           if (email) {
             key.ref.child('operatorId').set(email);
+          }
+          if (name) {
+            key.ref.child('operatorName').set(name);
           }
         });
       });

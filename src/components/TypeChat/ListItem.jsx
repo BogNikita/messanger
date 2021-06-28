@@ -33,7 +33,7 @@ export default React.memo(function ListItem({ title, type }) {
 
   const clickHandler = useCallback(
     (chat) => {
-      history.push(`/${type}/${chat.id}`);
+      history.push(`/${chat.id}/${type}`);
       dispatch(closeChatList());
     },
     [type],
