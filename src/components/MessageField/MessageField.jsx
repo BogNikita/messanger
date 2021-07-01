@@ -3,14 +3,15 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/chat';
-import MessageFieldForm from './MessageFieldForm';
-import MessageList from './MessageList';
-import DialogIsOver from '../DialogIsOver/DialogIsOver';
+import { openChatList } from '../../store/action/styles';
+import { MessageFieldForm } from './';
+import { MessageList } from './';
+import DialogIsOver from '../DialogIsOver';
 import TypingIndicator from '../TypingIndicator/TypingIndicator';
-import DialogSettings from '../DialogSettings/DialogSettings';
+import DialogSettings from '../DialogSettings';
 import classes from './MessageField.module.css';
 
-export default React.memo(function MessageField({ status, chatId }) {
+export default function MessageField({ status, chatId }) {
   const { chatList } = useSelector((state) => state.chat);
   const { messages, autoGreeting } = useSelector((state) => state.userDialogSettings);
   const { email } = useSelector((state) => state.auth);
@@ -39,6 +40,9 @@ export default React.memo(function MessageField({ status, chatId }) {
 
   const clickHandler = useCallback(
     (status, email) => {
+      if (status === 'waiting') {
+        sendNotification();
+      }
       if (status === 'active' || status === 'waiting') {
         setIsContinue(true);
       }
@@ -53,8 +57,28 @@ export default React.memo(function MessageField({ status, chatId }) {
     [chatId, autoGreeting],
   );
 
+  const sendNotification = useCallback(() => {
+    const headers = {
+      'Content-Type': 'application/json; charset=utf-8',
+      Authorization: 'Basic NjAzODIxMTYtNDYzOS00Yzc4LTkwMTktOThlOGZjZGIyZTU1',
+    };
+
+    const endpoint = 'https://onesignal.com/api/v1/notifications';
+
+    const params = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        app_id: '966e76c3-8930-433d-85e4-d62f11e0bde9',
+        include_external_user_ids: [chatId],
+        contents: { en: 'Оператор вошел в чат' },
+      }),
+    };
+    fetch(endpoint, params).then((res) => console.log(res.status));
+  }, [chatId]);
+
   const sendMessage = useCallback(
-    (content, imgSrc) => {
+    (content, imgSrc = '') => {
       const newMessage = {
         content,
         imgSrc,
@@ -69,7 +93,10 @@ export default React.memo(function MessageField({ status, chatId }) {
   return (
     <div className={classes.MessageField}>
       <div className={classes.HeaderWrapper}>
-        <div>
+        <div className={classes.MessageFieldHeader}>
+          <div className={classes.MessageFieldHeaderIcon} onClick={() => dispatch(openChatList())}>
+            <i className="fas fa-arrow-left"></i>
+          </div>
           <h2>{activeChat?.messages[0]?.writtenBy || 'Добро пожаловать'}</h2>
           {activeChat?.isTyping && <TypingIndicator />}
         </div>
@@ -86,18 +113,18 @@ export default React.memo(function MessageField({ status, chatId }) {
           )}
         </div>
       </div>
-        {activeChat?.status && (
-          <MessageFieldForm
-            status={status}
-            email={email}
-            clickHandler={clickHandler}
-            isContinue={isContinue}
-            autoComplete={messages}
-            channels={activeChat.id}
-            isTyping={activeChat.isTyping}
-            sendMessage={sendMessage}
-          />
-        )}
+      {activeChat?.status && (
+        <MessageFieldForm
+          status={status}
+          email={email}
+          clickHandler={clickHandler}
+          isContinue={isContinue}
+          autoComplete={messages}
+          channels={activeChat.id}
+          isTyping={activeChat.isTyping}
+          sendMessage={sendMessage}
+        />
+      )}
     </div>
   );
-});
+}

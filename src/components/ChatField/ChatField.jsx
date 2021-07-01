@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -5,12 +6,13 @@ import throttle from 'lodash.throttle';
 import { usePubNub } from 'pubnub-react';
 import Select from 'react-select';
 import { chatTyping } from '../../store/action/chat';
+import { closeChatList } from '../../store/action/styles';
 import { logout } from '../../store/action/auth';
-import Input from '../Input/Input';
-import Dropdown from '../Dropdown/Dropdown';
-import Button from '../Button/Button';
-import TypeChatList from '../TypeChat/TypeChatList';
-import ProfileEditModal from '../ProfileEditModal/ProfileEditModal';
+import Input from '../Input';
+import Dropdown from '../Dropdown';
+import Button from '../Button';
+import TypeChatList from '../TypeChat';
+import ProfileEditModal from '../ProfileEditModal';
 import classes from './ChatField.module.css';
 
 const customStyles = {
@@ -20,7 +22,7 @@ const customStyles = {
     padding: 10,
   }),
   control: () => ({
-    minWidth: 170,
+    minWidth: 110,
     padding: '1px 5px 2px',
     background: '#f3f3f3',
     borderRadius: 5,
@@ -40,10 +42,15 @@ const customStyles = {
     ...provided,
     padding: '2px 0',
   }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    padding: '8px 2px!important',
+  }),
 };
 
 export default function ChatField() {
   const { chatList, isSuccess } = useSelector((state) => state.chat);
+  const { isOpenChatList } = useSelector((state) => state.styles);
   const dispatch = useDispatch();
 
   const [searchElements, setSearch] = useState([]);
@@ -128,22 +135,25 @@ export default function ChatField() {
       const chat = chatList[key].chats.find((chat) => chat.id === id);
       if (chat) {
         history.push(`/${key}/${id}`);
+        dispatch(closeChatList());
       }
     }
   };
 
-  const clickHandlerLogout = () => {
+  const clickHandlerLogout = useCallback(() => {
     dispatch(logout());
-  };
+  }, [])
 
   const selectHandler = ({ value }) => {
     setValueSearch(value);
   };
+  
+  const cls = isOpenChatList ? [[classes.ChatList, classes.ChatListOpen].join(' ')] : classes.ChatList
 
   return (
-    <div className={classes.ChatList}>
+    <div className={cls}>
       <div className={classes.TopWrapper}>
-        <div className={classes.ModalButton} onClick={() => setIsOpen(!modalIsOpen)}>
+        <div className={classes.ChatFieldIconButton} onClick={() => setIsOpen(!modalIsOpen)}>
           <i className="fas fa-user-edit"></i>
         </div>
         <Select
@@ -155,8 +165,12 @@ export default function ChatField() {
           noOptionsMessage={() => null}
           menuPlacement={'auto'}
           isSearchable={false}
+          classNamePrefix="ChatList-Search"
         />
-        <Input name="search" onChange={handleChange} />
+        <Input name="search" onChange={handleChange} widthInput="100%" />
+        <div className={classes.ChatFieldIconButton} onClick={() => dispatch(closeChatList())}>
+          <i className="fas fa-arrow-right"></i>
+        </div>
       </div>
       {modalIsOpen && <ProfileEditModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />}
       {searchElements.length ? (

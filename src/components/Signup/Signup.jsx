@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
-import Button from '../Button/Button';
-import Error from '../Error/Error';
-import Input from '../Input/Input';
+import Button from '../Button';
+import Error from '../Error';
+import Input from '../Input';
 import classes from './Signup.module.css';
 
-export default function SignupComponent(props) {
+export default function Signup(props) {
   const {
     fieldLogin,
     fieldPassword,
@@ -35,6 +35,7 @@ export default function SignupComponent(props) {
         value={values[fieldLogin]}
         placeholder="email@email.com"
         errors={isFieldError(fieldLogin)}
+        minWidth="280"
       />
 
       <Input
@@ -46,6 +47,7 @@ export default function SignupComponent(props) {
         value={values[fieldPassword]}
         placeholder="123456"
         errors={isFieldError(fieldPassword)}
+        minWidth="280"
       />
 
       <Button type="submit">Войти</Button>

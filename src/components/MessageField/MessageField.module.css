@@ -16,9 +16,25 @@
   justify-content: space-between;
 }
 
+.MessageFieldHeader {
+  display: flex;
+  align-items: center;
+}
+
+.MessageFieldHeaderIcon {
+  display: none;
+  font-size: x-large;
+  cursor: pointer;
+  transition: opacity ease-in 0.2s;
+}
+
+.MessageFieldHeaderIcon:hover {
+  opacity: 0.5;
+  transition: opacity ease-in 0.2s;
+}
+
 .HeaderWrapper h2 {
-  margin: 0;
-  margin-right: 5px;
+  margin: 0 5px;
 }
 
 .Wrapper {
@@ -51,6 +67,8 @@
 .MessageFormButtonWrapper {
   display: flex;
   justify-content: center;
+  padding: 10px 0;
+  box-shadow: 0px 3px 5px -5px rgba(34, 60, 80, 0.6) inset;
 }
 
 .IconButton {
@@ -72,6 +90,10 @@
   transition: color 150ms;
 }
 
+.IconButton button {
+  min-width: 0;  
+}
+
 .IconButton:hover {
   color: hsl(0, 0%, 60%);
   transition: color 150ms;
@@ -85,4 +107,11 @@
   display: flex;
 }
 
-
+@media screen and (max-width: 1024px) {
+  .MessageField {
+    width: 100%;
+  }
+  .MessageFieldHeaderIcon {
+    display: block;
+  }
+}

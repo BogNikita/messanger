@@ -1,9 +1,10 @@
 import React from 'react';
-import ChatListItem from './ChatListItem';
+import { ChatListItem } from './';
 
 export default function ChatList({ chats, title, clickHandler }) {
   if (chats?.length) {
-    return chats?.map((chat, i) => (
+    const reverseChat = chats.sort((a,b) => b.id - a.id)
+    return reverseChat.map((chat, i) => (
       <ChatListItem key={`${chat.id}_${i}`} chat={chat} clickHandler={clickHandler} />
     ));
   }

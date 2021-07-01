@@ -3,10 +3,10 @@ import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import { fetchUserDialogSettingsUpdate } from '../../store/action/userDialogSettings';
-import Error from '../Error/Error';
-import Button from '../Button/Button';
-import Input from '../Input/Input';
-import AutoCompleteMessage from './AutoCompleteMessage';
+import Error from '../Error';
+import Button from '../Button';
+import Input from '../Input';
+import { AutoCompleteMessage } from './';
 import classes from './DialogSettings.module.css';
 
 const customStyles = {
@@ -59,7 +59,8 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="DialogSettings"
+        id="DialogSettings"
         closeTimeoutMS={300}>
         <div className={classes.ModalHeaderWrapper}>
           <h2>Настройка диалогов</h2>
@@ -69,7 +70,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
         </div>
         <Formik initialValues={{ messages, autoGreeting }} onSubmit={onSubmitHandler}>
           {({ values }) => (
-            <Form className="test">
+            <Form>
               <FieldArray
                 name="messages"
                 render={(arrayHelpers) => (
@@ -82,13 +83,14 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                           name={`messages.${index}.label`}
                           index={index}
                           removeItem={arrayHelpers.remove}
+                          widthInput="100%"
                         />
                       ))
                     ) : (
                       <span>У вас пока нет готовых сообщений</span>
                     )}
                     <div>
-                      <Button type="button" onClick={() => arrayHelpers.push()}>
+                      <Button type="button" onClick={arrayHelpers.push}>
                         Добавить сообщения
                       </Button>
                     </div>
@@ -104,7 +106,7 @@ export default function DialogSettings({ modalIsOpen, setIsOpen }) {
                         <Input
                           title="Автоматическое приветствие"
                           placeholder="Введите сообщение при входе в диалог"
-                          widthInput='100%'
+                          widthInput="100%"
                           {...field}
                         />
                       </div>

@@ -4,8 +4,8 @@ import { useInputValue } from '../../hooks/input.hook';
 import Select from 'react-select';
 import { Picker } from 'emoji-mart';
 import { usePubNub } from 'pubnub-react';
-import Button from '../Button/Button';
-import Input from '../Input/Input';
+import Button from '../Button';
+import Input from '../Input';
 import classes from './MessageField.module.css';
 import 'emoji-mart/css/emoji-mart.css';
 
@@ -109,6 +109,7 @@ export default React.memo(function MessageFieldForm(props) {
     }
   };
 
+
   if (usl) {
     return (
       <form className={classes.MessageForm} onSubmit={onSubmitHandler}>
@@ -147,9 +148,9 @@ export default React.memo(function MessageFieldForm(props) {
           <div className={classes.IconButton} onClick={() => setIsImgInput(!isImgInput)}>
             <i className="far fa-file-image"></i>
           </div>
-          <div className={classes.MessageFormButton}>
+          <div className={[classes.MessageFormButton, classes.IconButton].join(' ')}>
             <Button type="submit" onClick={() => setMenuIsOpen(false)}>
-              Отправить
+              <i className="far fa-paper-plane"></i>
             </Button>
           </div>
         </div>
