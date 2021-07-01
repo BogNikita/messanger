@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import Button from '../Button';
 import Error from '../Error';
 import Input from '../Input';
@@ -67,10 +66,6 @@ export default function Signup(props) {
       <Button type="submit">Зарегистрироваться</Button>
       {isPending && 'Loading...'}
       {isError && <Error message={errorMessage} />}
-      <div className={classes.LinkWrapper}>
-        <Link to='/auth' className={classes.Link}>Войти</Link>
-        <Link to='/auth' className={classes.Link}>Зарегистрироваться через соц. сеть</Link>
-      </div>
     </form>
   );
 }
