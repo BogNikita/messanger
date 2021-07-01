@@ -1,15 +1,13 @@
 import React, { useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import Button from '../Button';
 import Error from '../Error';
 import Input from '../Input';
-import classes from './Signup.module.css';
+import classes from './Signin.module.css';
 
-export default function Signup(props) {
+export default function Signin(props) {
   const {
     fieldLogin,
     fieldPassword,
-    fieldConfirmPassword,
     values,
     errors,
     touched,
@@ -27,7 +25,7 @@ export default function Signup(props) {
   );
 
   return (
-    <form className={classes.FormSignup} onSubmit={handleSubmit}>
+    <form className={classes.FormSignin} onSubmit={handleSubmit}>
       <Input
         type="email"
         name={fieldLogin}
@@ -52,25 +50,9 @@ export default function Signup(props) {
         minWidth="280"
       />
 
-      <Input
-        type="password"
-        name={fieldConfirmPassword}
-        title="Повторите пароль"
-        onChange={handleChange}
-        onBlur={handleBlur}
-        value={values[fieldConfirmPassword]}
-        placeholder="123456"
-        errors={isFieldError(fieldConfirmPassword)}
-        minWidth="280"
-      />
-
-      <Button type="submit">Зарегистрироваться</Button>
+      <Button type="submit">Войти</Button>
       {isPending && 'Loading...'}
       {isError && <Error message={errorMessage} />}
-      <div className={classes.LinkWrapper}>
-        <Link to='/auth' className={classes.Link}>Войти</Link>
-        <Link to='/auth' className={classes.Link}>Зарегистрироваться через соц. сеть</Link>
-      </div>
     </form>
   );
 }

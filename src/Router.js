@@ -2,7 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import MainPage from './pages/MainPage';
+import SigninPage from './pages/SigninPage';
 import SignupPage from './pages/SignupPage';
+
 
 export default function Router() {
   const { token } = useSelector((state) => state.auth);
@@ -26,6 +28,9 @@ export default function Router() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/auth">
+            <SigninPage />
+          </Route>
+          <Route exact path="/auth/signup">
             <SignupPage />
           </Route>
           <Redirect to="/auth" />
