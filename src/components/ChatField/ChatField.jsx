@@ -96,11 +96,7 @@ export default function ChatField() {
       pubnub.addListener({
         signal: typingSignal,
       });
-      pubnub.subscribe({ channels: ['typing'] });
     }
-    return () => {
-      pubnub.unsubscribeAll();
-    };
   }, [isSuccess, typingSignal, pubnub]);
 
   const handleChange = useMemo(
@@ -142,13 +138,15 @@ export default function ChatField() {
 
   const clickHandlerLogout = useCallback(() => {
     dispatch(logout());
-  }, [])
+  }, []);
 
   const selectHandler = ({ value }) => {
     setValueSearch(value);
   };
-  
-  const cls = isOpenChatList ? [[classes.ChatList, classes.ChatListOpen].join(' ')] : classes.ChatList
+
+  const cls = isOpenChatList
+    ? [[classes.ChatList, classes.ChatListOpen].join(' ')]
+    : classes.ChatList;
 
   return (
     <div className={cls}>

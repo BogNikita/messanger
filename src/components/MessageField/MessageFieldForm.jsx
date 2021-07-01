@@ -1,11 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useRef, useState } from 'react';
-import { useInputValue } from '../../hooks/input.hook';
 import Select from 'react-select';
 import { Picker } from 'emoji-mart';
 import { usePubNub } from 'pubnub-react';
 import Button from '../Button';
-import Input from '../Input';
 import classes from './MessageField.module.css';
 import 'emoji-mart/css/emoji-mart.css';
 
@@ -28,23 +26,11 @@ const customStyles = {
 };
 
 export default React.memo(function MessageFieldForm(props) {
-  const {
-    status,
-    isContinue,
-    email,
-    clickHandler,
-    autoComplete,
-    channels,
-    isTyping,
-    sendMessage,
-    name,
-  } = props;
-
-  const inputImgSrc = useInputValue('');
+  const { status, isContinue, clickHandler, autoComplete, channels, isTyping, sendMessage } = props;
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [isImgInput, setIsImgInput] = useState(false);
   const [inputTextValue, setInputTextValue] = useState('');
+  const [imgSrc, setImgSrc] = useState('');
   const [selectedValue, setSelectedValue] = useState([]);
 
   const timeoutCache = useRef(0);
@@ -108,24 +94,24 @@ export default React.memo(function MessageFieldForm(props) {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    if (inputTextValue || selectedValue.length || inputImgSrc.value()) {
+    if (inputTextValue || selectedValue.length || imgSrc) {
       const SelectMessageToStr =
         selectedValue?.reduce((acc, item) => acc + ' ' + item.label, '') || '';
       const content = `${SelectMessageToStr} ${inputTextValue}`.trim();
-      sendMessage(content, inputImgSrc.value());
+      sendMessage(content, imgSrc);
       setInputTextValue('');
       setSelectedValue([]);
-      inputImgSrc.clear();
-      setIsImgInput(false);
+      setImgSrc('');
     }
+  };
+
+  const handleFileChange = (e) => {
+    setImgSrc(e.target.files[0]);
   };
 
   if (usl) {
     return (
       <form className={classes.MessageForm} onSubmit={onSubmitHandler}>
-        {isImgInput && (
-          <Input {...inputImgSrc.bind} title="Введите URL картинки" type="URL" widthInput="75%" />
-        )}
         <div className={classes.FormWrapper}>
           <Select
             isMulti
@@ -155,8 +141,11 @@ export default React.memo(function MessageFieldForm(props) {
             }}>
             <i className="far fa-smile-beam"></i>
           </div>
-          <div className={classes.IconButton} onClick={() => setIsImgInput(!isImgInput)}>
-            <i className="far fa-file-image"></i>
+          <div className={classes.IconButton} onChange={handleFileChange}>
+            <label htmlFor="upload img">
+              <i className="far fa-file-image"></i>
+            </label>
+            <input className={classes.uploadImg} type="file" id="upload img" />
           </div>
           <div className={[classes.MessageFormButton, classes.IconButton].join(' ')}>
             <Button type="submit" onClick={() => setMenuIsOpen(false)}>

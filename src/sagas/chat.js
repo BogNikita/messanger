@@ -57,11 +57,16 @@ function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus, name })
 
 function* fetchAddNewMessageWorker({ id, newMessage, index }) {
   try {
+    let imgSrc = '';
+    if (newMessage.imgSrc) {
+      yield firebase.storage().ref(`images/${id}_${index}.jpg`).put(newMessage.imgSrc);
+      imgSrc = yield firebase.storage().ref(`images/${id}_${index}.jpg`).getDownloadURL();
+    }
     yield firebase
       .database()
       .ref(`chatList/${id - 1}/messages/${index}`)
-      .set({ ...newMessage });
-    yield put(addNewMessage(id, newMessage));
+      .set({ ...newMessage, imgSrc });
+    yield put(addNewMessage(id, { ...newMessage, imgSrc }));
   } catch (e) {
     yield put(fetchChatError(e.message));
   }

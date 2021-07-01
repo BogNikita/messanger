@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import 'firebase/storage';
 import { firebaseConfig } from './config/firebase.config';
 import moment from 'moment';
 import 'moment/locale/ru';
