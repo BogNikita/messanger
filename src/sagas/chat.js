@@ -31,7 +31,7 @@ function* fetchChatWorker({ count, status }) {
   }
 }
 
-function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus }) {
+function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus, name }) {
   try {
     yield firebase
       .database()
@@ -44,6 +44,9 @@ function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus }) {
           if (email) {
             key.ref.child('operatorId').set(email);
           }
+          if (name) {
+            key.ref.child('operatorName').set(name);
+          }
         });
       });
     yield put(changeChatStatus(id, newStatus, email, oldStatus));
@@ -54,11 +57,16 @@ function* fetchChangeChatStatusWorker({ id, newStatus, email, oldStatus }) {
 
 function* fetchAddNewMessageWorker({ id, newMessage, index }) {
   try {
+    let imgSrc = '';
+    if (newMessage.imgSrc) {
+      yield firebase.storage().ref(`images/${id}_${index}.jpg`).put(newMessage.imgSrc);
+      imgSrc = yield firebase.storage().ref(`images/${id}_${index}.jpg`).getDownloadURL();
+    }
     yield firebase
       .database()
       .ref(`chatList/${id - 1}/messages/${index}`)
-      .set({ ...newMessage });
-    yield put(addNewMessage(id, newMessage));
+      .set({ ...newMessage, imgSrc });
+    yield put(addNewMessage(id, { ...newMessage, imgSrc }));
   } catch (e) {
     yield put(fetchChatError(e.message));
   }

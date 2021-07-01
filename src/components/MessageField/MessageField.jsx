@@ -2,7 +2,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import { fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/chat';
+import { usePubNub } from 'pubnub-react';
+import { addNewMessage, fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/chat';
 import { openChatList } from '../../store/action/styles';
 import { MessageFieldForm } from './';
 import { MessageList } from './';
@@ -14,10 +15,14 @@ import classes from './MessageField.module.css';
 export default function MessageField({ status, chatId }) {
   const { chatList } = useSelector((state) => state.chat);
   const { messages, autoGreeting } = useSelector((state) => state.userDialogSettings);
-  const { email } = useSelector((state) => state.auth);
-
+  const {
+    email,
+    user: { displayName },
+  } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const pubnub = usePubNub();
 
   const [isContinue, setIsContinue] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -25,12 +30,28 @@ export default function MessageField({ status, chatId }) {
   const activeChat = chatList[status]?.chats.find((chat) => chat.id === +chatId);
   const prevStatus = useRef(status);
 
+  const getNewMessage = ({ message, publisher }) => {
+    if (publisher !== displayName) {
+      dispatch(addNewMessage(+chatId, message));
+    }
+  };
+
   useEffect(() => {
     setIsContinue(false);
     if (prevStatus.current === 'waiting') {
       setIsContinue(true);
     }
-  }, [chatId]);
+    const listener = { message: getNewMessage };
+    if (status === 'active') {
+      pubnub.setUUID(displayName);
+      pubnub.subscribe({ channels: ['typing', `channel_${chatId}`] });
+      pubnub.addListener(listener);
+    }
+    return () => {
+      pubnub.unsubscribeAll();
+      pubnub.removeListener(listener);
+    };
+  }, [chatId, status]);
 
   const newStatus = useRef({
     offline: 'save',
@@ -38,24 +59,23 @@ export default function MessageField({ status, chatId }) {
     waiting: 'active',
   });
 
-  const clickHandler = useCallback(
-    (status, email) => {
-      if (status === 'waiting') {
-        sendNotification();
+  const clickHandler = useCallback(() => {
+    if (status === 'waiting') {
+      sendNotification();
+    }
+    if (status === 'active' || status === 'waiting') {
+      setIsContinue(true);
+    }
+    if (status !== 'active') {
+      dispatch(
+        fetchChangeChatStatus(+chatId, status, newStatus.current[status], email, displayName),
+      );
+      history.push(`/${chatId}/${newStatus.current[status]}`);
+      if (status === 'waiting' && autoGreeting) {
+        sendMessage(autoGreeting);
       }
-      if (status === 'active' || status === 'waiting') {
-        setIsContinue(true);
-      }
-      if (status !== 'active') {
-        dispatch(fetchChangeChatStatus(+chatId, status, newStatus.current[status], email));
-        history.push(`/${newStatus.current[status]}/${chatId}`);
-        if (status === 'waiting' && autoGreeting) {
-          sendMessage(autoGreeting);
-        }
-      }
-    },
-    [chatId, autoGreeting],
-  );
+    }
+  }, [chatId, autoGreeting, status]);
 
   const sendNotification = useCallback(() => {
     const headers = {
@@ -85,6 +105,8 @@ export default function MessageField({ status, chatId }) {
         timestamp: Date.now(),
         writtenBy: email,
       };
+      const channel = `channel_${chatId}`;
+      pubnub.publish({ channel, message: newMessage });
       dispatch(fetchAddNewMessage(+chatId, newMessage, activeChat.messages.length));
     },
     [email, activeChat, chatId],
@@ -105,9 +127,9 @@ export default function MessageField({ status, chatId }) {
       <div className={classes.Wrapper}>
         <div className={classes.WrapperMessageList}>
           {activeChat && <MessageList messages={activeChat?.messages} />}
-          {activeChat?.rate && (
+          {activeChat?.chatRate && (
             <DialogIsOver
-              chatRate={activeChat.rate}
+              chatRate={activeChat.chatRate}
               timestamp={activeChat.messages[activeChat.messages.length - 1].timestamp}
             />
           )}
@@ -123,6 +145,7 @@ export default function MessageField({ status, chatId }) {
           channels={activeChat.id}
           isTyping={activeChat.isTyping}
           sendMessage={sendMessage}
+          name={displayName}
         />
       )}
     </div>

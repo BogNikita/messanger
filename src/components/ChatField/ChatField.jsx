@@ -81,10 +81,10 @@ export default function ChatField() {
 
   const typingSignal = useCallback(
     (s) => {
-      if (s.message.typing === '0') {
+      if (s.message.typing === '0' && s.message.author === 'client') {
         dispatch(chatTyping(s.message.id, false));
       }
-      if (s.message.typing === '1') {
+      if (s.message.typing === '1' && s.message.author === 'client') {
         dispatch(chatTyping(s.message.id, true));
       }
     },
@@ -96,11 +96,7 @@ export default function ChatField() {
       pubnub.addListener({
         signal: typingSignal,
       });
-      pubnub.subscribe({ channels: ['typing'] });
     }
-    return () => {
-      pubnub.unsubscribeAll();
-    };
   }, [isSuccess, typingSignal, pubnub]);
 
   const handleChange = useMemo(
@@ -134,7 +130,7 @@ export default function ChatField() {
     for (const key in chatList) {
       const chat = chatList[key].chats.find((chat) => chat.id === id);
       if (chat) {
-        history.push(`/${key}/${id}`);
+        history.push(`/${id}/${key}`);
         dispatch(closeChatList());
       }
     }
@@ -142,13 +138,15 @@ export default function ChatField() {
 
   const clickHandlerLogout = useCallback(() => {
     dispatch(logout());
-  }, [])
+  }, []);
 
   const selectHandler = ({ value }) => {
     setValueSearch(value);
   };
-  
-  const cls = isOpenChatList ? [[classes.ChatList, classes.ChatListOpen].join(' ')] : classes.ChatList
+
+  const cls = isOpenChatList
+    ? [[classes.ChatList, classes.ChatListOpen].join(' ')]
+    : classes.ChatList;
 
   return (
     <div className={cls}>

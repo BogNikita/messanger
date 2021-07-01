@@ -41,13 +41,14 @@ export function chatTyping(id, value) {
   };
 }
 
-export function fetchChangeChatStatus(id, oldStatus, newStatus, email) {
+export function fetchChangeChatStatus(id, oldStatus, newStatus, email, name) {
   return {
     type: FETCH_CHANGE_CHAT_STATUS,
     newStatus,
     oldStatus,
     id,
     email,
+    name
   };
 }
 
