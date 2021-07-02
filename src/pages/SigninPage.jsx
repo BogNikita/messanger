@@ -45,7 +45,7 @@ export default function SigninPage() {
         <Link to="/auth/signup" className={classes.Link}>
           Зарегистрироваться
         </Link>
-        <Link to="/auth" className={classes.Link}>
+        <Link to="/auth/forgot" className={classes.Link}>
           Забыли пароль?
         </Link>
       </div>

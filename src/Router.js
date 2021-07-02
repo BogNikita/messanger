@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import ForgotPassword from './pages/ForgotPassword';
 import MainPage from './pages/MainPage';
 import SigninPage from './pages/SigninPage';
 import SignupPage from './pages/SignupPage';
@@ -35,6 +36,9 @@ export default function Router() {
           </Route>
           <Route exact path="/auth/society">
             <SocietyAuth />
+          </Route>
+          <Route exact path="/auth/forgot">
+            <ForgotPassword />
           </Route>
           <Redirect to="/auth" />
         </Switch>
