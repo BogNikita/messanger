@@ -39,7 +39,7 @@ export default function SigninPage() {
   });
 
   return (
-    <div className={classes.AuthLayuout}>
+    <div className={classes.AuthLayout}>
       <h1>Регистрация</h1>
       <Signup
         {...formik}
@@ -52,8 +52,8 @@ export default function SigninPage() {
         <Link to="/auth" className={classes.Link}>
           Войти
         </Link>
-        <Link to="/auth" className={classes.Link}>
-          Зарегистрироваться через соц. сеть
+        <Link to="/auth/society" className={classes.Link}>
+          Войти через соц. сеть
         </Link>
       </div>
     </div>

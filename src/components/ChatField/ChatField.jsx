@@ -138,6 +138,7 @@ export default function ChatField() {
 
   const clickHandlerLogout = useCallback(() => {
     dispatch(logout());
+    history.push('/auth')
   }, []);
 
   const selectHandler = ({ value }) => {
