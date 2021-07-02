@@ -33,6 +33,8 @@
   display: block;
   color: rgb(190, 91, 91);
   margin: 5px 0;
+  max-width: 280px;
+  align-self: flex-end;
 }
 
 @media (max-width: 525px) {

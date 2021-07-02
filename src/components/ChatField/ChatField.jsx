@@ -7,7 +7,7 @@ import { usePubNub } from 'pubnub-react';
 import Select from 'react-select';
 import { chatTyping } from '../../store/action/chat';
 import { closeChatList } from '../../store/action/styles';
-import { logout } from '../../store/action/auth';
+import { fetchLogout } from '../../store/action/auth';
 import Input from '../Input';
 import Dropdown from '../Dropdown';
 import Button from '../Button';
@@ -137,8 +137,8 @@ export default function ChatField() {
   };
 
   const clickHandlerLogout = useCallback(() => {
-    dispatch(logout());
-    history.push('/auth')
+    dispatch(fetchLogout());
+    history.push('/auth');
   }, []);
 
   const selectHandler = ({ value }) => {

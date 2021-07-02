@@ -5,9 +5,19 @@ import {
   FETCH_CHANGE_AVATAR,
   FETCH_GITHUB_AUTH,
   FETCH_GOOGLE_AUTH,
+  FETCH_LOGOUT,
   FETCH_UPDATE_PROFILE,
 } from '../store/action/action.type';
-import { changeAvatar, clearError, fetchError, fetchSuccess, updateProfile } from '../store/action/auth';
+import {
+  changeAvatar,
+  clearError,
+  fetchError,
+  fetchSuccess,
+  logout,
+  updateProfile,
+  fetchLogout,
+} from '../store/action/auth';
+import { changePassword } from '../store/action/styles';
 import firebase from 'firebase/app';
 
 function* fetchAuthWorker({ email, password }) {
@@ -17,8 +27,8 @@ function* fetchAuthWorker({ email, password }) {
     yield put(fetchSuccess(user));
   } catch (e) {
     yield put(fetchError(e.message));
-    yield delay(5000)
-    yield put(clearError())
+    yield delay(5000);
+    yield put(clearError());
   }
 }
 
@@ -31,8 +41,8 @@ function* fetchChangeAvatarWorker({ photoURL }) {
     });
   } catch (e) {
     yield put(fetchError(e.message));
-    yield delay(5000)
-    yield put(clearError())
+    yield delay(5000);
+    yield put(clearError());
   }
 }
 
@@ -44,14 +54,18 @@ function* fetchUpdateProfileWorker({ displayName, photo, password }) {
       displayName,
       photoURL,
     });
+    yield put(updateProfile(displayName, photoURL));
     if (password) {
       yield user.updatePassword(password);
+      yield put(fetchLogout());
+      yield put(changePassword(true));
+      yield delay(5000);
+      yield put(changePassword(false));
     }
-    yield put(updateProfile(displayName, photoURL));
   } catch (e) {
     yield put(fetchError(e.message));
-    yield delay(5000)
-    yield put(clearError())
+    yield delay(5000);
+    yield put(clearError());
   }
 }
 
@@ -61,8 +75,8 @@ function* fetchSignupWorker({ email, password }) {
     yield put(fetchSuccess(user, email));
   } catch (e) {
     yield put(fetchError(e.message));
-    yield delay(5000)
-    yield put(clearError())
+    yield delay(5000);
+    yield put(clearError());
   }
 }
 
@@ -73,8 +87,8 @@ function* fetchGoogleAuthWorker() {
     yield put(fetchSuccess(user));
   } catch (e) {
     yield put(fetchError(e.message));
-    yield delay(5000)
-    yield put(clearError())
+    yield delay(5000);
+    yield put(clearError());
   }
 }
 
@@ -85,8 +99,19 @@ function* fetchGithubAuthWorker() {
     yield put(fetchSuccess(user));
   } catch (e) {
     yield put(fetchError(e.message));
-    yield delay(5000)
-    yield put(clearError())
+    yield delay(5000);
+    yield put(clearError());
+  }
+}
+
+function* fetchLogoutWorker() {
+  try {
+    yield firebase.auth().signOut();
+    yield put(logout());
+  } catch (e) {
+    yield put(fetchError(e.message));
+    yield delay(5000);
+    yield put(clearError());
   }
 }
 
@@ -97,6 +122,7 @@ function* fetchAuthWotcher() {
   yield takeLatest(FETCH_AUTH_SIGNUP, fetchSignupWorker);
   yield takeLatest(FETCH_GOOGLE_AUTH, fetchGoogleAuthWorker);
   yield takeLatest(FETCH_GITHUB_AUTH, fetchGithubAuthWorker);
+  yield takeLatest(FETCH_LOGOUT, fetchLogoutWorker);
 }
 
 export default fetchAuthWotcher;

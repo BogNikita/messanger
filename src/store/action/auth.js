@@ -11,6 +11,8 @@ import {
   FETCH_GOOGLE_AUTH,
   FETCH_GITHUB_AUTH,
   CLEAR_ERROR,
+  FETCH_LOGOUT,
+  CHANGE_PASSWORD,
 } from './action.type';
 
 export function fetchRequest(email, password) {
@@ -97,3 +99,11 @@ export function clearError() {
     type: CLEAR_ERROR,
   };
 }
+
+export function fetchLogout() {
+  return {
+    type: FETCH_LOGOUT,
+  };
+}
+
+

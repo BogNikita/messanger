@@ -6,6 +6,7 @@ import {
   CHANGE_AVATAR,
   UPDATE_PROFILE,
   CLEAR_ERROR,
+  CHANGE_PASSWORD,
 } from '../action/action.type';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   errorMessage: '',
   email: null,
   token: null,
+  changePassword: false,
 };
 
 export default function auth(state = initialState, action) {
