@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Form, Field } from 'react-final-form';
 import { toast } from 'react-toastify';
 import { fetchChangeAvatar, fetchUpdateProfile } from '../../store/action/auth';
@@ -34,7 +35,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
   const { displayName, photoURL } = useSelector((state) => state.auth.user);
   const { isError, errorMessage } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
+  const history = useHistory();
   const [isChangeAvatar, setChangeAvatar] = useState(false);
 
   const closeModal = () => {
@@ -64,6 +65,8 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
         draggable: true,
         progress: undefined,
       });
+    } else {
+      history.push('/auth');
     }
   };
 
