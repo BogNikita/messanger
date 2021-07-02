@@ -1,48 +1,63 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import firebase from 'firebase/app';
+import { ToastContainer, toast } from 'react-toastify';
 import { useInputValue } from '../hooks/input.hook';
 import Button from '../components/Button';
-import Error from '../components/Error';
 import Input from '../components/Input';
 import classes from './Page.module.css';
 
 export default function ForgotPassword() {
-  const [isError, setError] = useState(false);
-  const [message, setMessage] = useState('');
   const emailInput = useInputValue('');
 
   const sendPasswordReset = async (e) => {
     e.preventDefault();
-    setError(false);
     try {
       await firebase.auth().sendPasswordResetEmail(emailInput.value());
-      setMessage('Вам отправлено письмо для сброса пароля');
+      toast.success('Вам отправлено письмо для сброса пароля', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (e) {
-      setError(true);
-      setMessage(e.message);
+      toast.error(e.message, {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
-  const MessageElement = () => {
-    if (isError && message) {
-      return <Error message={message} />;
-    } else if (message) {
-      return <span>{message}</span>;
-    } else {
-      return null;
-    }
-  };
   return (
     <div className={classes.AuthLayout}>
       <h1>Забыли пароль</h1>
       <form onSubmit={sendPasswordReset} className={classes.ForgotPassword}>
-        <Input type="text" title="Email" widthInput="100%" {...emailInput.bind} />
-        <MessageElement />
+        <Input type="email" title="Email" name="Email" widthInput="100%" {...emailInput.bind} />
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <Button type="submit">Отправить ссылку на восстановление</Button>
-        <Link to="/auth" className={classes.Link}>
-          Назад
-        </Link>
+        <div className={classes.LinkWrapper}>
+          <Link to="/auth" className={classes.Link}>
+            Назад
+          </Link>
+        </div>
       </form>
     </div>
   );
