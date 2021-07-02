@@ -24,15 +24,15 @@ export default function SigninPage() {
     validate: (values) => {
       const errors = {};
       if (!values.email) {
-        errors.email = 'Required';
+        errors.email = 'Обязательно';
       } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-        errors.email = 'Invalid email address';
+        errors.email = 'Некорректный email';
       } else if (!values.password) {
-        errors.password = 'Required';
-      } else if (values.password.length < 6) {
-        errors.password = 'Min length 6 symbols';
+        errors.password = 'Обязательно';
+      } else if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}$/.test(values.password)) {
+        errors.password = 'Пароль должен содержать цифру, буквы в нижнем и верхнем регистре и иметь длину не менее 8 знаков';
       } else if (values.password !== values.confirmPassword) {
-        errors.confirmPassword = 'Passwords must match';
+        errors.confirmPassword = 'Пароли должны совпадать';
       }
       return errors;
     },
