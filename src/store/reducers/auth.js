@@ -6,7 +6,6 @@ import {
   CHANGE_AVATAR,
   UPDATE_PROFILE,
   CLEAR_ERROR,
-  CHANGE_PASSWORD,
 } from '../action/action.type';
 
 const initialState = {

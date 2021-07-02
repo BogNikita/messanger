@@ -12,7 +12,6 @@ import {
   FETCH_GITHUB_AUTH,
   CLEAR_ERROR,
   FETCH_LOGOUT,
-  CHANGE_PASSWORD,
 } from './action.type';
 
 export function fetchRequest(email, password) {
