@@ -28,8 +28,6 @@ export default function SigninPage() {
         errors.email = 'Некорректный email';
       } else if (!values.password) {
         errors.password = 'Поле не должно быть пустым';
-      } else if (values.password.length < 6) {
-        errors.password = 'Минимальная длина 6 символов';
       }
       return errors;
     },
@@ -38,7 +36,7 @@ export default function SigninPage() {
   return (
     <div className={classes.AuthLayout}>
       <h1>
-        Авторизация <i className="fab fa-accessible-icon"></i>
+        Авторизация <i className="fab fa-empire"></i>
       </h1>
       <Signin {...formik} {...state} fieldLogin="email" fieldPassword="password" />
       <div className={classes.LinkWrapper}>

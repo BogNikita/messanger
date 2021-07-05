@@ -109,6 +109,9 @@ export default function ChatField() {
       const chat = chatList[key].chats.find((chat) => chat.id === id);
       if (chat) {
         history.push(`/${id}/${key}`);
+        setSearch([]);
+        setSearchId([]);
+        
         dispatch(closeChatList());
       }
     }

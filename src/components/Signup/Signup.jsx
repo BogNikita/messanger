@@ -85,7 +85,7 @@ export default function Signup(props) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="password" sm={3}>
+        <Label for="confirmPassword" sm={3}>
           Повторите пароль
         </Label>
         <Col sm={9}>
@@ -95,7 +95,7 @@ export default function Signup(props) {
             onChange={handleChange}
             onBlur={handleBlur}
             value={values[fieldConfirmPassword]}
-            id="password"
+            id="confirmPassword"
             invalid={!!isFieldError(fieldConfirmPassword)}
           />
           <FormFeedback>{isFieldError(fieldConfirmPassword)}</FormFeedback>

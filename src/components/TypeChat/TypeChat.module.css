@@ -4,7 +4,9 @@
   color: #fff;
   margin-top: 20px;
 }
-
+.ListItemWrapper {
+  height: 10%;
+}
 .TypeChatList h3 {
   cursor: pointer;
 }
@@ -15,7 +17,7 @@
 
 .ListItem {
   overflow-y: auto;
-  max-height: 250px;
+  max-height: 220px;
 }
 
 .gridContainer {

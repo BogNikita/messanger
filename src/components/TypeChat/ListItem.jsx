@@ -40,7 +40,7 @@ export default React.memo(function ListItem({ title, type }) {
   );
 
   return (
-    <li>
+    <li className={classes.ListItemWrapper}>
       <h4 onClick={() => setIsOpen(!isOpen)} className={classes.ListIetemHeader}>
         <i className={`fas fa-angle-${isOpen ? 'down' : 'right'}`}></i>
         &nbsp;{title}
