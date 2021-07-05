@@ -12,6 +12,7 @@ import 'moment/locale/ru';
 import * as Sentry from '@sentry/react';
 import { sentryConfig } from './config/sentry.config';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
 moment.locale('ru');
