@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
-import Signup from './Signup';
+import Signin from './Signin';
 
-function SignupPropTypes(props) {
-  return Signup(props);
+function SigninPropTypes(props) {
+  return Signin(props);
 }
 
-SignupPropTypes.propTypes = {
+SigninPropTypes.propTypes = {
   fieldLogin: PropTypes.string.isRequired,
   fieldPassword: PropTypes.string.isRequired,
-  fieldConfirmPassword: PropTypes.string.isRequired,
   values: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   touched: PropTypes.object.isRequired,
@@ -20,4 +19,4 @@ SignupPropTypes.propTypes = {
   errorMessage: PropTypes.string.isRequired,
 };
 
-export default SignupPropTypes;
+export default SigninPropTypes;

@@ -7,6 +7,7 @@ import {
   CHANGE_AVATAR,
   UPDATE_PROFILE,
   FETCH_UPDATE_PROFILE,
+  FETCH_AUTH_SIGNUP,
 } from './action.type';
 
 export function fetchRequest(email, password) {
@@ -65,6 +66,14 @@ export function fetchUpdateProfile(displayName, photo, password) {
     type: FETCH_UPDATE_PROFILE,
     displayName,
     photo,
+    password,
+  };
+}
+
+export function fetchSignup(email, password) {
+  return {
+    type: FETCH_AUTH_SIGNUP,
+    email,
     password,
   };
 }

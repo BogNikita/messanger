@@ -1,6 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
   FETCH_AUTH_REQUEST,
+  FETCH_AUTH_SIGNUP,
   FETCH_CHANGE_AVATAR,
   FETCH_UPDATE_PROFILE,
 } from '../store/action/action.type';
@@ -46,10 +47,20 @@ function* fetchUpdateProfileWorker({ displayName, photo, password }) {
   }
 }
 
+function* fetchSignupWorker({ email, password }) {
+  try {
+    const { user } = yield firebase.auth().createUserWithEmailAndPassword(email, password);
+    yield put(fetchSuccess(user, email));
+  } catch (e) {
+    yield put(fetchError(e.message));
+  }
+}
+
 function* fetchAuthWotcher() {
   yield takeLatest(FETCH_AUTH_REQUEST, fetchAuthWorker);
   yield takeLatest(FETCH_CHANGE_AVATAR, fetchChangeAvatarWorker);
   yield takeLatest(FETCH_UPDATE_PROFILE, fetchUpdateProfileWorker);
+  yield takeLatest(FETCH_AUTH_SIGNUP, fetchSignupWorker);
 }
 
 export default fetchAuthWotcher;
