@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import firebase from 'firebase/app';
 import { ToastContainer, toast } from 'react-toastify';
 import { useInputValue } from '../hooks/input.hook';
-import Button from '../components/Button';
-import Input from '../components/Input';
+import { Button, Form, Input, InputGroupAddon, InputGroup  } from 'reactstrap';
 import classes from './Page.module.css';
 
 export default function ForgotPassword() {
@@ -39,26 +38,29 @@ export default function ForgotPassword() {
   return (
     <div className={classes.AuthLayout}>
       <h1>Забыли пароль</h1>
-      <form onSubmit={sendPasswordReset} className={classes.ForgotPassword}>
-        <Input type="email" title="Email" name="Email" widthInput="100%" {...emailInput.bind} />
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+      <Form className={classes.ForgotPassword} onSubmit={sendPasswordReset}>
+        <InputGroup >
+          <InputGroupAddon addonType="prepend">Email</InputGroupAddon>
+          <Input type="email" title="Email" name="Email" {...emailInput.bind} placeholder='Введите Ваш email' />
+        </InputGroup>
         <Button type="submit">Отправить ссылку на восстановление</Button>
-        <div className={classes.LinkWrapper}>
-          <Link to="/auth" className={classes.Link}>
-            Назад
-          </Link>
-        </div>
-      </form>
+      </Form>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <div className={[classes.LinkWrapper, 'justify-content-end'].join(' ')}>
+        <Link to="/auth" className={classes.Link}>
+          Назад
+        </Link>
+      </div>
     </div>
   );
 }
