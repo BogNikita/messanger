@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { fetchSignup } from '../store/action/auth';
@@ -47,6 +48,14 @@ export default function SigninPage() {
         fieldPassword="password"
         fieldConfirmPassword="confirmPassword"
       />
+      <div className={classes.LinkWrapper}>
+        <Link to="/auth" className={classes.Link}>
+          Войти
+        </Link>
+        <Link to="/auth" className={classes.Link}>
+          Зарегистрироваться через соц. сеть
+        </Link>
+      </div>
     </div>
   );
 }
