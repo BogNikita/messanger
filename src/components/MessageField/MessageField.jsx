@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { usePubNub } from 'pubnub-react';
+import { usePrevious } from '../../hooks/previous.hook';
 import { addNewMessage, fetchAddNewMessage, fetchChangeChatStatus } from '../../store/action/chat';
 import { openChatList } from '../../store/action/styles';
 import { MessageFieldForm } from './';
@@ -22,23 +23,22 @@ export default function MessageField({ status, chatId }) {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const prevStatus = usePrevious({status, chatId})
   const pubnub = usePubNub();
 
   const [isContinue, setIsContinue] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
 
   const activeChat = chatList[status]?.chats.find((chat) => chat.id === +chatId);
-  const prevStatus = useRef(status);
 
   const getNewMessage = ({ message, publisher }) => {
     if (publisher !== displayName) {
       dispatch(addNewMessage(+chatId, message));
     }
   };
-
   useEffect(() => {
     setIsContinue(false);
-    if (prevStatus.current === 'waiting') {
+    if (prevStatus?.status === 'waiting' && prevStatus?.chatId === chatId) {
       setIsContinue(true);
     }
     const listener = { message: getNewMessage };
