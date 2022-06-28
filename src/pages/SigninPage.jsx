@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-import { fetchSignup } from '../store/action/auth';
-import Signup from '../components/Signup';
+import { fetchRequest } from '../store/action/auth';
+import Signin from '../components/Signin';
 import classes from './Page.module.css';
 
 export default function SigninPage() {
@@ -15,11 +15,10 @@ export default function SigninPage() {
     initialValues: {
       email: '',
       password: '',
-      confirmPassword: '',
     },
     onSubmit: (values) => {
       const { email, password } = values;
-      dispatch(fetchSignup(email, password));
+      dispatch(fetchRequest(email, password));
     },
     validate: (values) => {
       const errors = {};
@@ -29,10 +28,8 @@ export default function SigninPage() {
         errors.email = 'Некорректный email';
       } else if (!values.password) {
         errors.password = 'Поле не должно быть пустым';
-      } else if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}$/.test(values.password)) {
-        errors.password = 'Пароль должен содержать цифру, буквы в нижнем и верхнем регистре и иметь длину не менее 8 знаков';
-      } else if (values.password !== values.confirmPassword) {
-        errors.confirmPassword = 'Пароли должны совпадать';
+      } else if (values.password.length < 6) {
+        errors.password = 'Минимальная длина 6 символов';
       }
       return errors;
     },
@@ -40,20 +37,16 @@ export default function SigninPage() {
 
   return (
     <div className={classes.AuthLayout}>
-      <h1>Регистрация</h1>
-      <Signup
-        {...formik}
-        {...state}
-        fieldLogin="email"
-        fieldPassword="password"
-        fieldConfirmPassword="confirmPassword"
-      />
+      <h1>
+        Авторизация <i className="fab fa-accessible-icon"></i>
+      </h1>
+      <Signin {...formik} {...state} fieldLogin="email" fieldPassword="password" />
       <div className={classes.LinkWrapper}>
-        <Link to="/auth" className={classes.Link}>
-          Войти
+        <Link to="/auth/signup" className={classes.Link}>
+          Зарегистрироваться
         </Link>
-        <Link to="/auth/society" className={classes.Link}>
-          Войти через соц. сеть
+        <Link to="/auth/forgot" className={classes.Link}>
+          Забыли пароль?
         </Link>
       </div>
     </div>

@@ -4,49 +4,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import throttle from 'lodash.throttle';
 import { usePubNub } from 'pubnub-react';
-import Select from 'react-select';
+import {
+  InputGroup,
+  InputGroupButtonDropdown,
+  Input,
+  Button,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from 'reactstrap';
 import { chatTyping } from '../../store/action/chat';
 import { closeChatList } from '../../store/action/styles';
-import { logout } from '../../store/action/auth';
-import Input from '../Input';
+import { fetchLogout } from '../../store/action/auth';
 import Dropdown from '../Dropdown';
-import Button from '../Button';
 import TypeChatList from '../TypeChat';
 import ProfileEditModal from '../ProfileEditModal';
 import classes from './ChatField.module.css';
-
-const customStyles = {
-  option: (provided) => ({
-    ...provided,
-    borderBottom: '1px dotted pink',
-    padding: 10,
-  }),
-  control: () => ({
-    minWidth: 110,
-    padding: '1px 5px 2px',
-    background: '#f3f3f3',
-    borderRadius: 5,
-    borderRight: 'none',
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-  }),
-  menu: (provided) => ({
-    ...provided,
-    background: '#f3f3f3',
-  }),
-  valueContainer: (provided) => ({
-    ...provided,
-    padding: '2px 0',
-  }),
-  dropdownIndicator: (provided) => ({
-    ...provided,
-    padding: '8px 2px!important',
-  }),
-};
 
 export default function ChatField() {
   const { chatList, isSuccess } = useSelector((state) => state.chat);
@@ -57,6 +30,10 @@ export default function ChatField() {
   const [searchId, setSearchId] = useState([]);
   const [valueSearch, setValueSearch] = useState('content');
   const [modalIsOpen, setIsOpen] = useState(false);
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropDown = () => setDropdownOpen(!dropdownOpen);
 
   const typeChats = useRef([
     { type: 'waiting', title: 'В ожидании' },
@@ -108,9 +85,10 @@ export default function ChatField() {
         if (!!value) {
           for (const key in chatList) {
             chatList[key].chats.forEach((chat) => {
-              const find = chat.messages.filter((item) =>
-                item[valueSearch].toLowerCase().includes(value.toLowerCase()),
-              );
+              const find = chat.messages.filter((item, i) => {
+                if (valueSearch === 'writtenBy' && i > 1) return false;
+                return item[valueSearch].toLowerCase().includes(value.toLowerCase());
+              });
               if (find.length) {
                 find.forEach(() => {
                   id.push(chat.id);
@@ -137,16 +115,19 @@ export default function ChatField() {
   };
 
   const clickHandlerLogout = useCallback(() => {
-    dispatch(logout());
+    dispatch(fetchLogout());
+    history.push('/auth');
   }, []);
-
-  const selectHandler = ({ value }) => {
-    setValueSearch(value);
-  };
 
   const cls = isOpenChatList
     ? [[classes.ChatList, classes.ChatListOpen].join(' ')]
     : classes.ChatList;
+
+  const dropDownItem = searchSelectOption.current.map(({ value, label }, i) => (
+    <DropdownItem key={`${value}_${i}`} onClick={() => setValueSearch(value)}>
+      {label}
+    </DropdownItem>
+  ));
 
   return (
     <div className={cls}>
@@ -154,18 +135,18 @@ export default function ChatField() {
         <div className={classes.ChatFieldIconButton} onClick={() => setIsOpen(!modalIsOpen)}>
           <i className="fas fa-user-edit"></i>
         </div>
-        <Select
-          name="option-search"
-          options={searchSelectOption.current}
-          defaultValue={searchSelectOption.current[0]}
-          onChange={selectHandler}
-          styles={customStyles}
-          noOptionsMessage={() => null}
-          menuPlacement={'auto'}
-          isSearchable={false}
-          classNamePrefix="ChatList-Search"
-        />
-        <Input name="search" onChange={handleChange} widthInput="100%" />
+        <InputGroup>
+          <InputGroupButtonDropdown
+            addonType="append"
+            isOpen={dropdownOpen}
+            toggle={toggleDropDown}>
+            <DropdownToggle caret color="secondary">
+              Поиск по
+            </DropdownToggle>
+            <DropdownMenu>{dropDownItem}</DropdownMenu>
+          </InputGroupButtonDropdown>
+          <Input name="search" onChange={handleChange} />
+        </InputGroup>
         <div className={classes.ChatFieldIconButton} onClick={() => dispatch(closeChatList())}>
           <i className="fas fa-arrow-right"></i>
         </div>
@@ -180,7 +161,9 @@ export default function ChatField() {
         />
       ) : null}
       <TypeChatList typeChats={typeChats.current} />
-      <Button onClick={clickHandlerLogout}>Выйти</Button>
+      <Button color="secondary" size="lg" block onClick={clickHandlerLogout} className="w-100">
+        Выйти
+      </Button>
     </div>
   );
 }

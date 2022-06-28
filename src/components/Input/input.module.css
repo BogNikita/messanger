@@ -4,6 +4,13 @@
   border: none;
   padding: 12px;
   box-sizing: border-box;
+  border: 1px solid #ced4da;
+}
+
+.primary-input:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
 }
 
 .WidthInput {
@@ -33,6 +40,8 @@
   display: block;
   color: rgb(190, 91, 91);
   margin: 5px 0;
+  max-width: 280px;
+  align-self: flex-end;
 }
 
 @media (max-width: 525px) {

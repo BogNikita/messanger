@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Form, Field } from 'react-final-form';
+import { toast } from 'react-toastify';
 import { fetchChangeAvatar, fetchUpdateProfile } from '../../store/action/auth';
 import Modal from 'react-modal';
 import Button from '../Button';
 import Input from '../Input';
-import Error from '../Error';
 import classes from './ProfileEditModal.module.css';
 
 const customStyles = {
@@ -24,24 +25,48 @@ const customStyles = {
 Modal.setAppElement('#root');
 
 const required = (value) => !value && 'Поле не должно быть пустым';
-const minLength = (value) => value?.length < 5 && 'Минимальная длина пароля 6 символов';
+const validPassword = (value) =>
+  !!value &&
+  !/^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}$/.test(value) &&
+  'Пароль должен содержать цифру, буквы в нижнем и верхнем регистре и иметь длину не менее 8 знаков';
 const isEqual = (password) => (value) => value !== password && 'Пароли должны совпадать';
 
 export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
   const { displayName, photoURL } = useSelector((state) => state.auth.user);
   const { isError, errorMessage } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
+  const history = useHistory();
   const [isChangeAvatar, setChangeAvatar] = useState(false);
 
   const closeModal = () => {
     setIsOpen(false);
   };
 
-  const onSubmitHandler = ({ displayName, password, photoURL }) => {
+  const onSubmitHandler = ({ displayName, password, photoURL = '' }) => {
     dispatch(fetchUpdateProfile(displayName, photoURL, password));
-    if (!isError) {
+    if (!isError && !password) {
       closeModal();
+      toast.success('Данные успешно обновлены', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else if (isError) {
+      toast.error(errorMessage, {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      history.push('/auth');
     }
   };
 
@@ -79,7 +104,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
               validate={required}
               defaultValue={displayName ? displayName : ''}>
               {({ input, meta }) => (
-                <Input {...input} type="text" title="Имя" errors={meta.error} minWidth='280'/>
+                <Input {...input} type="text" title="Имя" errors={meta.error} minWidth="280" />
               )}
             </Field>
             <Field name="photo">
@@ -92,7 +117,7 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
                     </div>
                   ) : (
                     <>
-                      <Input {...input} type="url" title="Аватар" minWidth='280'/>
+                      <Input {...input} type="url" title="Аватар" minWidth="280" />
                       <Button
                         style={classes.AvatarSaveButton}
                         onClick={() => onChangeAvatar(input.value)}>
@@ -103,20 +128,31 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
                 </>
               )}
             </Field>
-            <Field name="password" validate={minLength}>
+            <Field name="password" validate={validPassword}>
               {({ input, meta }) => (
-                <Input {...input} type="password" title="Пароль" errors={meta.error} minWidth='280'/>
+                <Input
+                  {...input}
+                  type="password"
+                  title="Пароль"
+                  errors={meta.error}
+                  minWidth="280"
+                />
               )}
             </Field>
             <Field name="repeat_password" validate={isEqual(values.password)}>
               {({ input, meta }) => (
-                <Input {...input} type="password" title="Повторите пароль" errors={meta.error} minWidth='280'/>
+                <Input
+                  {...input}
+                  type="password"
+                  title="Повторите пароль"
+                  errors={meta.error}
+                  minWidth="280"
+                />
               )}
             </Field>
             <div className={classes.ModalSubmitButton}>
               <Button type="submit">Обновить данные</Button>
             </div>
-            {isError && <Error message={errorMessage} />}
           </form>
         )}
       />

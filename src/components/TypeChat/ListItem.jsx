@@ -41,10 +41,10 @@ export default React.memo(function ListItem({ title, type }) {
 
   return (
     <li>
-      <h3 onClick={() => setIsOpen(!isOpen)}>
+      <h4 onClick={() => setIsOpen(!isOpen)} className={classes.ListIetemHeader}>
         <i className={`fas fa-angle-${isOpen ? 'down' : 'right'}`}></i>
         &nbsp;{title}
-      </h3>
+      </h4>
       <ul className={classes.ListItem}>
         {isOpen && (
           <InfiniteScroll

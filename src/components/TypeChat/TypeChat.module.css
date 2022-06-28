@@ -2,6 +2,7 @@
   list-style: none;
   padding: 0;
   color: #fff;
+  margin-top: 20px;
 }
 
 .TypeChatList h3 {
@@ -19,7 +20,7 @@
 
 .gridContainer {
   display: grid;
-  grid-template-columns: 0.5fr 1.5fr;
+  grid-template-columns: 0.7fr 1.3fr;
   grid-template-rows: 1.3fr 0.7fr;
   gap: 0px 5px;
   padding: 10px;
@@ -55,3 +56,13 @@
   font-size: 28px;
 }
 
+.ListIetemHeader {
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity ease-in 0.2s;
+}
+
+.ListIetemHeader:hover {
+  opacity: 0.7;
+  transition: opacity ease-in 0.2s;
+}

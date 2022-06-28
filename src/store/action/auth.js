@@ -7,6 +7,11 @@ import {
   CHANGE_AVATAR,
   UPDATE_PROFILE,
   FETCH_UPDATE_PROFILE,
+  FETCH_AUTH_SIGNUP,
+  FETCH_GOOGLE_AUTH,
+  FETCH_GITHUB_AUTH,
+  CLEAR_ERROR,
+  FETCH_LOGOUT,
 } from './action.type';
 
 export function fetchRequest(email, password) {
@@ -17,11 +22,10 @@ export function fetchRequest(email, password) {
   };
 }
 
-export function fetchSuccess(user, email) {
+export function fetchSuccess(user) {
   return {
     type: FETCH_AUTH_SUCCESS,
     user,
-    email,
   };
 }
 
@@ -68,3 +72,37 @@ export function fetchUpdateProfile(displayName, photo, password) {
     password,
   };
 }
+
+export function fetchSignup(email, password) {
+  return {
+    type: FETCH_AUTH_SIGNUP,
+    email,
+    password,
+  };
+}
+
+export function fetchGoogleAuth() {
+  return {
+    type: FETCH_GOOGLE_AUTH,
+  };
+}
+
+export function fetchGithubAuth() {
+  return {
+    type: FETCH_GITHUB_AUTH,
+  };
+}
+
+export function clearError() {
+  return {
+    type: CLEAR_ERROR,
+  };
+}
+
+export function fetchLogout() {
+  return {
+    type: FETCH_LOGOUT,
+  };
+}
+
+
