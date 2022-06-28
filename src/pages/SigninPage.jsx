@@ -36,7 +36,7 @@ export default function SigninPage() {
   });
 
   return (
-    <div className={classes.AuthLayuout}>
+    <div className={classes.AuthLayout}>
       <h1>
         Авторизация <i className="fab fa-accessible-icon"></i>
       </h1>

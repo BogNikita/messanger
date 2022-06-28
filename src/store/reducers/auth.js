@@ -5,6 +5,7 @@ import {
   AUTH_LOGOUT,
   CHANGE_AVATAR,
   UPDATE_PROFILE,
+  CLEAR_ERROR,
 } from '../action/action.type';
 
 const initialState = {
@@ -14,7 +15,7 @@ const initialState = {
   isError: null,
   errorMessage: '',
   email: null,
-  token: null
+  token: null,
 };
 
 export default function auth(state = initialState, action) {
@@ -23,7 +24,7 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         isPending: true,
-        isError: null
+        isError: null,
       };
     case FETCH_AUTH_SUCCESS:
       return {
@@ -33,39 +34,44 @@ export default function auth(state = initialState, action) {
         isSuccess: true,
         errorMessage: '',
         isError: false,
-        email: action.email,
-        token: action.user.uid
+        email: action.user.email,
+        token: action.user.uid,
       };
     case FETCH_AUTH_FAILURE:
       return {
         ...state,
         isPending: false,
         isError: true,
-        errorMessage: action.error
+        errorMessage: action.error,
       };
     case AUTH_LOGOUT: {
-      return {
-        ...state,
-        user: null,
-        email: null,
-        token: null
-      }
+      return initialState;
     }
     case CHANGE_AVATAR: {
       return {
         ...state,
         user: {
-          ...state.user, photoURL: action.photoURL
-        }
-      }
+          ...state.user,
+          photoURL: action.photoURL,
+        },
+      };
     }
     case UPDATE_PROFILE: {
       return {
         ...state,
         user: {
-          ...state.user, photoURL: action.photoURL, displayName: action.displayName
-        }
-      }
+          ...state.user,
+          photoURL: action.photoURL,
+          displayName: action.displayName,
+        },
+      };
+    }
+    case CLEAR_ERROR: {
+      return {
+        ...state,
+        errorMessage: '',
+        isError: false,
+      };
     }
     default:
       return state;

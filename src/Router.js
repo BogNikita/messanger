@@ -4,7 +4,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import SigninPage from './pages/SigninPage';
 import SignupPage from './pages/SignupPage';
-
+import SocietyAuth from './pages/SocietyAuth';
 
 export default function Router() {
   const { token } = useSelector((state) => state.auth);
@@ -32,6 +32,9 @@ export default function Router() {
           </Route>
           <Route exact path="/auth/signup">
             <SignupPage />
+          </Route>
+          <Route exact path="/auth/society">
+            <SocietyAuth />
           </Route>
           <Redirect to="/auth" />
         </Switch>

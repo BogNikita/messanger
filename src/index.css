@@ -36,14 +36,22 @@ code {
   transform: translateX(100%);
 }
 
+.fa-google {
+  background: linear-gradient(to bottom left, transparent 49%, #fbbc05 50%) 0 25%/48% 40%,
+    linear-gradient(to top left, transparent 49%, #fbbc05 50%) 0 75%/48% 40%,
+    linear-gradient(-40deg, transparent 53%, #ea4335 54%),
+    linear-gradient(45deg, transparent 46%, #4285f4 48%), #34a853;
+  background-repeat: no-repeat;
+  background-clip: text;
+  color: transparent;
+}
 
 @media (max-width: 768px) {
   #DialogSettings {
-    left: 0!important;
+    left: 0 !important;
   }
 }
 
-
 .ChatList-Search__dropdownIndicator {
   padding: 8px 2px !important;
-} 
+}
