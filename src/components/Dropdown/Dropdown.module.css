@@ -1,0 +1,25 @@
+.Dropdown {
+    background: #f3f3f3;
+    list-style: none;
+    border-radius: 5px;
+    margin: 0;
+    padding: 0;
+    right: 10px;
+    left: 50px;
+    max-height: 500px;
+    overflow-y: auto;
+    position: absolute; 
+}
+
+.Dropdown li {
+    border-bottom: 1px solid black;
+    padding: 12px;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity ease-in .2s;
+}
+
+.Dropdown li:hover{
+    opacity: .5;
+    transition: opacity ease-in .2s;
+}

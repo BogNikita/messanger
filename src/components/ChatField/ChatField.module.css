@@ -1,0 +1,77 @@
+.ChatList {
+  grid-area: ChatList;
+  background-color: #416ccc;
+  padding: 10px;
+  position: relative;
+}
+
+.TopWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.TopWrapper input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.ChatFieldIconButton {
+  margin-right: 10px;
+  font-size: x-large;
+  color: #fff;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity ease-in 0.2s;
+}
+
+.ChatFieldIconButton:hover {
+  opacity: 0.5;
+  transition: opacity ease-in 0.2s;
+}
+
+.ChatFieldIconButton:last-child {
+  display: none;
+}
+
+.ModalForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.CustomSelect {
+  padding: 11px 5px;
+  background: #f3f3f3;
+  border-radius: 5px;
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  position: relative;
+}
+
+@media screen and (max-width: 1024px) {
+  .ChatList {
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    transition: all 0.2s;
+    left: -100%;
+    right: 100%;
+  }
+
+  .ChatListOpen {
+    left: 0;
+    right: 50%;
+  }
+  .ChatFieldIconButton:last-child {
+    display: block;
+    margin-left: 5px;
+  }
+}
+
+@media (max-width: 576px) {
+  .ChatListOpen {
+    right: 0;
+  }
+}
