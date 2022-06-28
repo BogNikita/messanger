@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '../Button';
 import Input from '../Input';
@@ -24,6 +25,8 @@ export default function Signin(props) {
     [errors, touched],
   );
 
+  const {changePassword} = useSelector(state => state.styles)
+
   useEffect(() => {
     if (isError) {
       toast.error(errorMessage, {
@@ -37,6 +40,20 @@ export default function Signin(props) {
       });
     }
   }, [isError, errorMessage]);
+
+  useEffect(() => {
+    if (changePassword) {
+      toast.success('Пароль успешно обновлен', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }, [changePassword]);
 
   return (
     <form className={classes.FormSignin} onSubmit={handleSubmit}>

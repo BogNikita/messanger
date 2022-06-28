@@ -1,7 +1,8 @@
-import { CLOSE_CHATLIST, OPEN_CHATLIST } from '../action/action.type';
+import { CHANGE_PASSWORD, CLOSE_CHATLIST, OPEN_CHATLIST } from '../action/action.type';
 
 const initialState = {
   isOpenChatList: null,
+  changePassword: null,
 };
 
 export default function styles(state = initialState, action) {
@@ -16,6 +17,12 @@ export default function styles(state = initialState, action) {
         ...state,
         isOpenChatList: false,
       };
+    case CHANGE_PASSWORD: {
+      return {
+        ...state,
+        changePassword: action.payload
+      }
+    }
     default:
       return state;
   }

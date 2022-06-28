@@ -16,6 +16,7 @@ const initialState = {
   errorMessage: '',
   email: null,
   token: null,
+  changePassword: false,
 };
 
 export default function auth(state = initialState, action) {
