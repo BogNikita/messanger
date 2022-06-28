@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import Button from '../Button';
-import Error from '../Error';
 import Input from '../Input';
 import classes from './Signin.module.css';
 
@@ -23,6 +23,20 @@ export default function Signin(props) {
     (name) => errors[name] && touched[name] && errors[name],
     [errors, touched],
   );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(errorMessage, {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }, [isError, errorMessage]);
 
   return (
     <form className={classes.FormSignin} onSubmit={handleSubmit}>
@@ -52,7 +66,17 @@ export default function Signin(props) {
 
       <Button type="submit">Войти</Button>
       {isPending && 'Loading...'}
-      {isError && <Error message={errorMessage} />}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </form>
   );
 }

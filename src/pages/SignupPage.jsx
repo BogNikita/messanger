@@ -24,11 +24,11 @@ export default function SigninPage() {
     validate: (values) => {
       const errors = {};
       if (!values.email) {
-        errors.email = 'Обязательно';
+        errors.email = 'Поле не должно быть пустым';
       } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
         errors.email = 'Некорректный email';
       } else if (!values.password) {
-        errors.password = 'Обязательно';
+        errors.password = 'Поле не должно быть пустым';
       } else if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}$/.test(values.password)) {
         errors.password = 'Пароль должен содержать цифру, буквы в нижнем и верхнем регистре и иметь длину не менее 8 знаков';
       } else if (values.password !== values.confirmPassword) {

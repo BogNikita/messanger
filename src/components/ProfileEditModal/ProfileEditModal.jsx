@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
+import { toast } from 'react-toastify';
 import { fetchChangeAvatar, fetchUpdateProfile } from '../../store/action/auth';
 import Modal from 'react-modal';
 import Button from '../Button';
 import Input from '../Input';
-import Error from '../Error';
 import classes from './ProfileEditModal.module.css';
 
 const customStyles = {
@@ -42,6 +42,25 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
     dispatch(fetchUpdateProfile(displayName, photoURL, password));
     if (!isError) {
       closeModal();
+      toast.success('Данные успешно обновлены', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error(errorMessage, {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -116,7 +135,6 @@ export default function ProfileEditModal({ modalIsOpen, setIsOpen }) {
             <div className={classes.ModalSubmitButton}>
               <Button type="submit">Обновить данные</Button>
             </div>
-            {isError && <Error message={errorMessage} />}
           </form>
         )}
       />
